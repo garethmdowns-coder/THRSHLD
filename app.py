@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_migrate import Migrate
+from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date, timedelta
 import os
@@ -23,7 +24,16 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 }
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Mail configuration
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', '587'))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@thrshld.app')
+
 # Initialize extensions
+mail = Mail(app)
 from models import db, User, UserProfile, UserGoals, Workout, Exercise, CheckIn, BodyMeasurement, PersonalRecord
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -140,6 +150,136 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+# Password Reset Routes
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+        
+    if request.method == "POST":
+        email = request.form.get("email")
+        
+        if not email:
+            flash("Email is required")
+            return render_template("forgot_password.html")
+            
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            # Generate reset token
+            token = user.generate_reset_token()
+            db.session.commit()
+            
+            # Send reset email
+            try:
+                send_reset_email(user.email, token)
+                flash("Password reset instructions have been sent to your email.")
+            except Exception as e:
+                logging.error(f"Failed to send reset email: {e}")
+                flash("Failed to send reset email. Please try again later.")
+        else:
+            # Don't reveal whether email exists or not for security
+            flash("If an account with that email exists, password reset instructions have been sent.")
+            
+        return render_template("forgot_password.html")
+    
+    return render_template("forgot_password.html")
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+        
+    user = User.query.filter_by(reset_token=token).first()
+    
+    if not user or not user.verify_reset_token(token):
+        flash("Invalid or expired reset token")
+        return redirect(url_for("forgot_password"))
+        
+    if request.method == "POST":
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+        
+        if not password or not confirm_password:
+            flash("Both password fields are required")
+            return render_template("reset_password.html", token=token)
+            
+        if password != confirm_password:
+            flash("Passwords do not match")
+            return render_template("reset_password.html", token=token)
+            
+        if len(password) < 6:
+            flash("Password must be at least 6 characters long")
+            return render_template("reset_password.html", token=token)
+            
+        # Update password and clear reset token
+        user.set_password(password)
+        user.clear_reset_token()
+        db.session.commit()
+        
+        flash("Your password has been updated! You can now log in.")
+        return redirect(url_for("login"))
+        
+    return render_template("reset_password.html", token=token)
+
+def send_reset_email(email, token):
+    """Send password reset email"""
+    reset_url = url_for('reset_password', token=token, _external=True)
+    
+    html_body = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; background-color: #000000; color: #ffffff; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #111111; border-radius: 10px; padding: 40px;">
+            <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">THRSHLD</h1>
+            
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Password Reset Request</h2>
+            
+            <p style="color: #9ca3af; margin-bottom: 20px;">
+                You have requested to reset your password for your THRSHLD account. 
+                Click the button below to reset your password:
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{reset_url}" 
+                   style="background-color: #3b82f6; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                    Reset Password
+                </a>
+            </div>
+            
+            <p style="color: #9ca3af; font-size: 14px; margin-top: 30px;">
+                This link will expire in 1 hour. If you didn't request this password reset, 
+                you can safely ignore this email.
+            </p>
+            
+            <p style="color: #9ca3af; font-size: 12px; margin-top: 20px;">
+                If the button doesn't work, copy and paste this URL into your browser:<br>
+                <span style="color: #3b82f6;">{reset_url}</span>
+            </p>
+        </div>
+    </body>
+    </html>
+    """
+    
+    text_body = f"""
+    THRSHLD - Password Reset Request
+    
+    You have requested to reset your password for your THRSHLD account.
+    
+    Click this link to reset your password: {reset_url}
+    
+    This link will expire in 1 hour. If you didn't request this password reset, 
+    you can safely ignore this email.
+    """
+    
+    msg = Message(
+        subject="THRSHLD - Reset Your Password",
+        recipients=[email],
+        html=html_body,
+        body=text_body
+    )
+    
+    mail.send(msg)
 
 def get_user_stats(user_id):
     """Calculate user statistics from database"""
