@@ -471,9 +471,10 @@ def get_user_data():
 def set_profile():
     try:
         profile_data = request.get_json()
+        logging.debug(f"Profile data received: {profile_data}")
         
         # Basic validation
-        if not profile_data.get('name', '').strip():
+        if not profile_data or not profile_data.get('name', '').strip():
             return jsonify({'error': 'Name is required'}), 400
         
         # Get or create user profile
@@ -481,6 +482,7 @@ def set_profile():
         if not profile:
             profile = UserProfile(user_id=current_user.id)
             db.session.add(profile)
+            logging.debug("Created new profile for user")
         
         # Update profile fields
         profile.name = profile_data.get('name', '').strip()
@@ -501,13 +503,15 @@ def set_profile():
                 pass
         
         db.session.commit()
+        logging.debug(f"Profile saved successfully for user {current_user.email}")
         
         return jsonify({'success': True, 'message': 'Profile saved successfully!'})
         
     except Exception as e:
         logging.error(f"Error setting profile: {e}")
+        logging.error(f"Profile data was: {profile_data}")
         db.session.rollback()
-        return jsonify({'error': 'Failed to save profile'}), 500
+        return jsonify({'error': f'Failed to save profile: {str(e)}'}), 500
 
 # Progress Analytics Routes
 @app.route("/api/progress/overview")
