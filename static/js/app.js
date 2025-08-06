@@ -40,32 +40,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Load progress data when page loads
-    loadProgressData();
+    // Try to load progress data, but don't fail if it's not available
+    try {
+        loadProgressData();
+    } catch (error) {
+        console.log('Progress data not available:', error);
+    }
     
-    // Check if profile exists to determine app state
-    fetch('/get-user-data')
-        .then(response => response.json())
+    // Check if profile setup is visible (indicates new user)
+    const profileSetup = document.getElementById('profile-setup');
+    if (profileSetup && profileSetup.style.display !== 'none') {
+        // Profile setup is visible, stay in onboarding mode
+        hideMainApp();
+    } else {
+        // Profile setup is hidden, user has profile - show main app
+        showMainApp();
+        showTab('today');
+        
+        // Try to load user data, but don't block if it fails
+        fetch('/get-user-data', {
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Failed to load user data');
+        })
         .then(data => {
-            if (data.profile && data.profile.name) {
-                // Profile exists, show main app
-                showMainApp();
-                showTab('today');
-                
-                // Check if we have a goal and show appropriate UI
-                const hasGoal = data.goal && data.goal.trim();
-                if (!hasGoal) {
-                    showGoalSetup();
-                }
-            } else {
-                // No profile, stay in onboarding
-                hideMainApp();
+            console.log('User data loaded:', data);
+            // Update UI with loaded data if available
+            if (data.profile) {
+                updateProfileDisplay(data.profile);
             }
         })
         .catch(error => {
-            console.error('Error checking profile:', error);
-            hideMainApp();
+            console.log('User data not available, using defaults:', error);
+            // Continue with default UI - don't hide the app
         });
+    }
 });
 
 function initializeEventListeners() {
@@ -757,9 +770,16 @@ function showProgressTab(tabName) {
 }
 
 function loadProgressData() {
-    // Load overview stats
-    fetch('/api/progress/overview')
-        .then(response => response.json())
+    // Load overview stats with fallback
+    fetch('/api/progress/overview', {
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Progress data not available');
+        })
         .then(data => {
             if (data.stats) {
                 document.getElementById('total-workouts').textContent = data.stats.total_workouts || 0;
@@ -768,7 +788,36 @@ function loadProgressData() {
                 document.getElementById('consistency').textContent = Math.round(data.workout_consistency || 0) + '%';
             }
         })
-        .catch(error => console.error('Error loading progress data:', error));
+        .catch(error => {
+            console.log('Progress data not available, using defaults:', error);
+            // Set default values
+            const totalWorkouts = document.getElementById('total-workouts');
+            const currentStreak = document.getElementById('current-streak');
+            const personalRecords = document.getElementById('personal-records');
+            const consistency = document.getElementById('consistency');
+            
+            if (totalWorkouts) totalWorkouts.textContent = '0';
+            if (currentStreak) currentStreak.textContent = '0';
+            if (personalRecords) personalRecords.textContent = '0';
+            if (consistency) consistency.textContent = '0%';
+        });
+}
+
+function updateProfileDisplay(profile) {
+    // Update profile display elements if they exist
+    const profileName = document.getElementById('profile-name');
+    const profileAge = document.getElementById('profile-age');
+    const profileGender = document.getElementById('profile-gender');
+    
+    if (profileName && profile.name) {
+        profileName.textContent = profile.name;
+    }
+    if (profileAge && profile.age) {
+        profileAge.textContent = profile.age;
+    }
+    if (profileGender && profile.gender) {
+        profileGender.textContent = profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1);
+    }
 }
 
 function loadProgressTabData(tabName) {
