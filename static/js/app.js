@@ -191,7 +191,14 @@ async function handleProfileSubmission(event) {
         age: document.getElementById('age-input').value,
         gender: document.getElementById('gender-input').value,
         experience: document.getElementById('experience-input').value,
-        training_days: document.getElementById('training-days-input').value
+        training_days: document.getElementById('training-days-input').value,
+        squat_1rm: document.getElementById('squat-1rm-input').value,
+        bench_1rm: document.getElementById('bench-1rm-input').value,
+        deadlift_1rm: document.getElementById('deadlift-1rm-input').value,
+        overhead_press_1rm: document.getElementById('overhead-press-1rm-input').value,
+        max_pull_ups: document.getElementById('max-pull-ups-input').value,
+        five_km_time: document.getElementById('five-km-time-input').value,
+        preferred_intensity: document.getElementById('preferred-intensity-input').value
     };
     
     // Basic validation
@@ -386,43 +393,51 @@ function showEditProfile() {
     }
 }
 
-function populateProfileForm() {
-    // Get current profile data from the profile tab
-    const profileName = document.getElementById('profile-name');
-    const profileAge = document.getElementById('profile-age');
-    const profileGender = document.getElementById('profile-gender');
-    const profileDetails = document.getElementById('profile-details');
-    
-    // Populate form fields
-    const nameInput = document.getElementById('name-input');
-    const ageInput = document.getElementById('age-input');
-    const genderInput = document.getElementById('gender-input');
-    const experienceInput = document.getElementById('experience-input');
-    const trainingDaysInput = document.getElementById('training-days-input');
-    
-    if (profileName && nameInput) {
-        nameInput.value = profileName.textContent.trim();
-    }
-    if (profileAge && ageInput) {
-        const age = profileAge.textContent.trim();
-        if (age !== '--') ageInput.value = age;
-    }
-    if (profileGender && genderInput) {
-        const gender = profileGender.textContent.trim().toLowerCase();
-        if (gender !== '--') genderInput.value = gender;
-    }
-    
-    // Parse experience and training days from profile details
-    if (profileDetails && experienceInput && trainingDaysInput) {
-        const details = profileDetails.textContent.trim();
-        const parts = details.split(' • ');
-        if (parts.length >= 2) {
-            const experience = parts[0].toLowerCase();
-            const trainingDays = parts[1].replace(' days/week', '');
-            
-            experienceInput.value = experience;
-            if (trainingDays !== '0') trainingDaysInput.value = trainingDays;
+async function populateProfileForm() {
+    try {
+        // Get complete user data from backend
+        const response = await fetch('/get-user-data');
+        if (!response.ok) {
+            console.error('Failed to load user data for profile editing');
+            return;
         }
+        
+        const userData = await response.json();
+        const profile = userData.profile || {};
+        
+        // Populate basic fields
+        const nameInput = document.getElementById('name-input');
+        const ageInput = document.getElementById('age-input');
+        const genderInput = document.getElementById('gender-input');
+        const experienceInput = document.getElementById('experience-input');
+        const trainingDaysInput = document.getElementById('training-days-input');
+        
+        if (nameInput) nameInput.value = profile.name || '';
+        if (ageInput) ageInput.value = profile.age || '';
+        if (genderInput) genderInput.value = profile.gender || '';
+        if (experienceInput) experienceInput.value = profile.experience_level || '';
+        if (trainingDaysInput) trainingDaysInput.value = profile.training_days_per_week || '';
+        
+        // Populate performance data fields
+        const squatInput = document.getElementById('squat-1rm-input');
+        const benchInput = document.getElementById('bench-1rm-input');
+        const deadliftInput = document.getElementById('deadlift-1rm-input');
+        const ohpInput = document.getElementById('overhead-press-1rm-input');
+        const pullUpsInput = document.getElementById('max-pull-ups-input');
+        const fiveKInput = document.getElementById('five-km-time-input');
+        const intensityInput = document.getElementById('preferred-intensity-input');
+        
+        if (squatInput) squatInput.value = profile.squat_1rm || '';
+        if (benchInput) benchInput.value = profile.bench_1rm || '';
+        if (deadliftInput) deadliftInput.value = profile.deadlift_1rm || '';
+        if (ohpInput) ohpInput.value = profile.overhead_press_1rm || '';
+        if (pullUpsInput) pullUpsInput.value = profile.max_pull_ups || '';
+        if (fiveKInput) fiveKInput.value = profile.five_km_time || '';
+        if (intensityInput) intensityInput.value = profile.preferred_intensity || '';
+        
+        console.log('Profile form populated with user data:', profile);
+    } catch (error) {
+        console.error('Error populating profile form:', error);
     }
 }
 
