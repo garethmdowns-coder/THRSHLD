@@ -24,11 +24,12 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 }
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Session configuration
+# Session configuration - relaxed for debugging
 app.config['SESSION_COOKIE_SECURE'] = False  # Allow HTTP for development
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_HTTPONLY'] = False  # Allow JS access for debugging
+app.config['SESSION_COOKIE_SAMESITE'] = None  # Less restrictive
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+app.config['SESSION_COOKIE_DOMAIN'] = None  # Default domain
 
 # Mail configuration
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')

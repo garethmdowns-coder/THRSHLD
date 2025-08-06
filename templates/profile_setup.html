@@ -244,6 +244,7 @@
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
+                    credentials: 'same-origin',  // Include cookies/session
                     body: JSON.stringify(profileData)
                 });
 
