@@ -14,7 +14,7 @@ from sqlalchemy import func, and_
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-production")
+app.secret_key = os.environ.get("SESSION_SECRET", "f8a3b2c1d4e5f6789abc012345def678")
 
 # Database configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
@@ -116,8 +116,8 @@ def login():
                 logging.debug(f"Has profile: {has_profile}, Has name: {has_name}")
                 
                 if not has_profile or not has_name:
-                    logging.debug("User needs profile setup, rendering profile_setup.html")
-                    return render_template("profile_setup.html")
+                    logging.debug("User needs profile setup, redirecting to /profile-setup")
+                    return redirect("/profile-setup")
                 else:
                     logging.debug("Redirecting to index")
                     return redirect("/")
@@ -161,7 +161,7 @@ def register():
     login_user(user)
     
     # New users go to profile setup
-    return render_template("profile_setup.html")
+    return redirect("/profile-setup")
 
 @app.route("/logout")
 @login_required
