@@ -69,9 +69,9 @@ def index():
         # Check if user has completed profile setup
         profile = current_user.profile
         if not profile or not profile.name:
-            # Redirect new users to profile setup
-            logging.debug("Index: User needs profile setup, redirecting")
-            return redirect("/profile-setup")
+            # Show profile setup directly for new users
+            logging.debug("Index: User needs profile setup, showing profile setup page")
+            return render_template("profile_setup.html")
         
         # Get user data from database for returning users
         goals = current_user.goals
@@ -134,8 +134,8 @@ def login():
                 logging.debug(f"Has profile: {has_profile}, Has name: {has_name}")
                 
                 if not has_profile or not has_name:
-                    logging.debug("User needs profile setup, redirecting to /profile-setup")
-                    return redirect("/profile-setup")
+                    logging.debug("User needs profile setup, rendering profile setup template directly")
+                    return render_template("profile_setup.html")
                 else:
                     logging.debug("Redirecting to index")
                     return redirect("/")
