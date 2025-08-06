@@ -143,6 +143,69 @@
                         <option value="7">7 days per week</option>
                     </select>
                 </div>
+                
+                <!-- Performance Data Section -->
+                <div class="border-t border-gray-700 pt-6 mt-6">
+                    <h3 class="text-lg font-semibold text-thrshld-primary mb-2">Performance Data (Optional)</h3>
+                    <p class="text-sm text-thrshld-gray-medium mb-4">Help us create precise workouts by sharing your current strength levels. Leave blank if unknown - we'll help you establish baselines.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- 1RM Data -->
+                        <div>
+                            <label for="squat_1rm" class="block text-sm font-medium text-thrshld-primary mb-2">Squat 1RM (kg)</label>
+                            <input type="number" id="squat_1rm" name="squat_1rm" step="0.5" min="0" 
+                                   class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent" 
+                                   placeholder="e.g. 100">
+                        </div>
+                        
+                        <div>
+                            <label for="bench_1rm" class="block text-sm font-medium text-thrshld-primary mb-2">Bench Press 1RM (kg)</label>
+                            <input type="number" id="bench_1rm" name="bench_1rm" step="0.5" min="0" 
+                                   class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent" 
+                                   placeholder="e.g. 80">
+                        </div>
+                        
+                        <div>
+                            <label for="deadlift_1rm" class="block text-sm font-medium text-thrshld-primary mb-2">Deadlift 1RM (kg)</label>
+                            <input type="number" id="deadlift_1rm" name="deadlift_1rm" step="0.5" min="0" 
+                                   class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent" 
+                                   placeholder="e.g. 120">
+                        </div>
+                        
+                        <div>
+                            <label for="overhead_press_1rm" class="block text-sm font-medium text-thrshld-primary mb-2">Overhead Press 1RM (kg)</label>
+                            <input type="number" id="overhead_press_1rm" name="overhead_press_1rm" step="0.5" min="0" 
+                                   class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent" 
+                                   placeholder="e.g. 60">
+                        </div>
+                        
+                        <div>
+                            <label for="max_pull_ups" class="block text-sm font-medium text-thrshld-primary mb-2">Max Pull-ups</label>
+                            <input type="number" id="max_pull_ups" name="max_pull_ups" min="0" 
+                                   class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent" 
+                                   placeholder="e.g. 12">
+                        </div>
+                        
+                        <div>
+                            <label for="five_km_time" class="block text-sm font-medium text-thrshld-primary mb-2">5K Best Time (mm:ss)</label>
+                            <input type="text" id="five_km_time" name="five_km_time" pattern="[0-9]{1,2}:[0-9]{2}" 
+                                   class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent" 
+                                   placeholder="e.g. 25:30">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label for="preferred_intensity" class="block text-sm font-medium text-thrshld-primary mb-2">Preferred Workout Intensity</label>
+                            <select id="preferred_intensity" name="preferred_intensity" 
+                                    class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                                <option value="">Select intensity preference</option>
+                                <option value="low">Low - Gentle, recovery-focused sessions</option>
+                                <option value="moderate">Moderate - Balanced training intensity</option>
+                                <option value="high">High - Challenging, progressive sessions</option>
+                                <option value="extreme">Extreme - Maximum intensity, competition-style</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Submit Button -->
                 <button type="submit" id="save-profile-btn"
@@ -224,7 +287,14 @@
                 height: formData.get('height') || '',
                 experience: formData.get('experience') || '',
                 training_location: formData.get('training_location') || '',
-                training_days: formData.get('training_days') || ''
+                training_days: formData.get('training_days') || '',
+                squat_1rm: formData.get('squat_1rm') || '',
+                bench_1rm: formData.get('bench_1rm') || '',
+                deadlift_1rm: formData.get('deadlift_1rm') || '',
+                overhead_press_1rm: formData.get('overhead_press_1rm') || '',
+                max_pull_ups: formData.get('max_pull_ups') || '',
+                five_km_time: formData.get('five_km_time') || '',
+                preferred_intensity: formData.get('preferred_intensity') || ''
             };
 
             console.log('Submitting profile data:', profileData);

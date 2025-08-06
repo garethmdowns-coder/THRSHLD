@@ -433,19 +433,53 @@ def check_in():
         recent_checkins = CheckIn.query.filter_by(user_id=current_user.id).order_by(CheckIn.date.desc()).limit(3).all()
         recent_history = [c.notes for c in recent_checkins if c.notes]
 
-        prompt = f"""User goals: {goals.to_dict()}
+        # Get user profile for detailed workout personalization
+        profile = current_user.profile
         
-Current check-in: {status}
+        prompt = f"""You are THRSHLD's elite AI fitness coach, specializing in creating detailed, personalized workout programs.
 
-Recent workout history: {recent_history[-3:] if len(recent_history) > 1 else 'First workout'}
+USER PROFILE:
+- Age: {profile.age if profile else 'Unknown'}
+- Gender: {profile.gender if profile else 'Unknown'}
+- Experience: {profile.experience_level if profile else 'beginner'}
+- Training Location: {profile.training_location if profile else 'gym'}
+- Weight: {profile.weight_kg if profile else 'Unknown'}kg
+- Preferred Intensity: {profile.preferred_intensity if profile else 'moderate'}
 
-Based on this information, create a personalized workout plan for today. Include:
-1. 4-6 specific exercises
-2. Sets and reps for each exercise
-3. Brief instructions or form cues
-4. Estimated total workout time
+CURRENT 1RM DATA (for percentage calculations):
+- Squat: {profile.squat_1rm if profile and profile.squat_1rm else 'Unknown'}kg
+- Bench Press: {profile.bench_1rm if profile and profile.bench_1rm else 'Unknown'}kg
+- Deadlift: {profile.deadlift_1rm if profile and profile.deadlift_1rm else 'Unknown'}kg
+- Overhead Press: {profile.overhead_press_1rm if profile and profile.overhead_press_1rm else 'Unknown'}kg
+- Max Pull-ups: {profile.max_pull_ups if profile and profile.max_pull_ups else 'Unknown'}
+- 5K Time: {profile.five_km_time if profile and profile.five_km_time else 'Unknown'}
 
-Format the response as a structured workout plan that's easy to follow."""
+USER GOALS: {goals.to_dict() if goals else 'General fitness'}
+
+TODAY'S CHECK-IN: {status}
+
+RECENT WORKOUT HISTORY: {recent_history[-3:] if len(recent_history) > 1 else 'First workout - establish baseline'}
+
+Create a highly detailed, personalized workout for today. Requirements:
+
+STRENGTH EXERCISES (if applicable):
+- Specify exact weight as % of 1RM (e.g., "75% of 1RM = 90kg") OR RPE scale (1-10)
+- Include sets x reps format (e.g., "4 sets of 6 reps")
+- Add rest periods between sets
+- Include form cues and safety notes
+
+CONDITIONING/CARDIO (if applicable):
+- Draw inspiration from CrossFit WODs (like "Fran", "Murph", "Cindy") or HYROX-style workouts
+- Include time domains (EMOM, AMRAP, For Time, etc.)
+- Specify exact distances, weights, and time caps
+- Scale appropriately for user's fitness level
+
+STRUCTURE:
+1. Warm-up (5-10 minutes)
+2. Main workout (20-45 minutes)
+3. Cool-down (5-10 minutes)
+
+Format as a detailed workout card with clear progression and personalization."""
 
         headers = {
             "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -458,7 +492,7 @@ Format the response as a structured workout plan that's easy to follow."""
                 {"role": "system", "content": "You are THRSHLD's AI fitness coach. Create personalized, safe, and effective workout plans based on user goals and check-ins. Always prioritize proper form and progressive overload."},
                 {"role": "user", "content": prompt}
             ],
-            "max_tokens": 800,
+            "max_tokens": 1500,
             "temperature": 0.7
         }
 
@@ -563,6 +597,15 @@ def set_profile():
         profile.primary_activity = profile_data.get('primary_activity', '')
         profile.training_location = profile_data.get('training_location', '')
         profile.training_days_per_week = int(profile_data.get('training_days', 0)) if profile_data.get('training_days') else None
+        
+        # Update performance data fields
+        profile.squat_1rm = float(profile_data.get('squat_1rm', 0)) if profile_data.get('squat_1rm') else None
+        profile.bench_1rm = float(profile_data.get('bench_1rm', 0)) if profile_data.get('bench_1rm') else None
+        profile.deadlift_1rm = float(profile_data.get('deadlift_1rm', 0)) if profile_data.get('deadlift_1rm') else None
+        profile.overhead_press_1rm = float(profile_data.get('overhead_press_1rm', 0)) if profile_data.get('overhead_press_1rm') else None
+        profile.max_pull_ups = int(profile_data.get('max_pull_ups', 0)) if profile_data.get('max_pull_ups') else None
+        profile.five_km_time = profile_data.get('five_km_time', '').strip() if profile_data.get('five_km_time') else None
+        profile.preferred_intensity = profile_data.get('preferred_intensity', '').strip() if profile_data.get('preferred_intensity') else None
         
         # Parse date of birth if provided
         if profile_data.get('date_of_birth'):

@@ -37,6 +37,7 @@ User onboarding preference: Profile setup must be completed before accessing any
 - **Database Models**: User, UserProfile, UserGoals, Workout, Exercise, CheckIn, BodyMeasurement, PersonalRecord
 - **Data Relationships**: Proper foreign key relationships between users and their data
 - **Profile Data**: Name, age, gender, weight, height, date of birth, experience level, primary activity, training location
+- **Performance Tracking**: 1RM data for major lifts (squat, bench, deadlift, overhead press), max pull-ups, 5K time, intensity preferences
 - **Data Management**: Automatic table creation, transaction management, and data integrity
 - **Statistics Tracking**: Real-time calculation of workout counts, streaks, personal records, and progress metrics
 

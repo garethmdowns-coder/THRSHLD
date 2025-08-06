@@ -76,6 +76,16 @@ class UserProfile(db.Model):
     training_location = db.Column(db.String(20))  # gym, home, outdoor
     training_days_per_week = db.Column(db.Integer)
     profile_photo_url = db.Column(db.Text)
+    
+    # Enhanced fields for workout personalization
+    squat_1rm = db.Column(db.Float)  # 1RM for squat in kg
+    bench_1rm = db.Column(db.Float)  # 1RM for bench press in kg
+    deadlift_1rm = db.Column(db.Float)  # 1RM for deadlift in kg
+    overhead_press_1rm = db.Column(db.Float)  # 1RM for overhead press in kg
+    max_pull_ups = db.Column(db.Integer)  # Max consecutive pull-ups
+    five_km_time = db.Column(db.String(10))  # Personal best 5K time (MM:SS format)
+    preferred_intensity = db.Column(db.String(20))  # low, moderate, high, extreme
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -91,7 +101,14 @@ class UserProfile(db.Model):
             'primary_activity': self.primary_activity,
             'training_location': self.training_location,
             'training_days_per_week': self.training_days_per_week,
-            'profile_photo_url': self.profile_photo_url
+            'profile_photo_url': self.profile_photo_url,
+            'squat_1rm': self.squat_1rm,
+            'bench_1rm': self.bench_1rm,
+            'deadlift_1rm': self.deadlift_1rm,
+            'overhead_press_1rm': self.overhead_press_1rm,
+            'max_pull_ups': self.max_pull_ups,
+            'five_km_time': self.five_km_time,
+            'preferred_intensity': self.preferred_intensity
         }
 
 class UserGoals(db.Model):
