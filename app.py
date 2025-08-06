@@ -221,27 +221,35 @@ def logout():
 @app.route("/connect-strava")
 @login_required
 def connect_strava():
+    # Store user ID in session before redirecting
+    session['user_id_for_strava'] = current_user.id
     redirect_uri = url_for('strava_callback', _external=True)
     auth_url = strava_api.get_authorization_url(redirect_uri)
     return redirect(auth_url)
 
 @app.route("/strava/callback")
 def strava_callback():
-    # Check if user is logged in, if not redirect to login
-    if not current_user.is_authenticated:
-        session['strava_code'] = request.args.get('code')
-        return redirect(url_for('index'))
-    
-    code = request.args.get('code') or session.pop('strava_code', None)
+    code = request.args.get('code')
     if not code:
-        flash("Strava authorization failed.", "error")
-        return redirect(url_for('index'))
+        return redirect(url_for('index') + '?error=strava_auth_failed')
     
-    token_data = strava_api.exchange_code_for_token(code)
-    if token_data:
-        flash("Strava connected successfully!", "success")
+    # If user is not authenticated, try to log them back in if we have their user ID
+    if not current_user.is_authenticated:
+        user_id = session.get('user_id_for_strava')
+        if user_id:
+            user = User.query.get(user_id)
+            if user:
+                login_user(user)
+    
+    # Now process the Strava token
+    if current_user.is_authenticated:
+        token_data = strava_api.exchange_code_for_token(code)
+        if token_data:
+            return redirect(url_for('index') + '?strava=connected')
+        else:
+            return redirect(url_for('index') + '?error=strava_token_failed')
     else:
-        flash("Failed to connect Strava. Please try again.", "error")
+        return redirect(url_for('index') + '?error=auth_required')
     
     return redirect(url_for('index'))
 
