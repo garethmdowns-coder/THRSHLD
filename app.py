@@ -42,6 +42,7 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'norep
 # Initialize extensions
 mail = Mail(app)
 from models import db, User, UserProfile, UserGoals, Workout, Exercise, CheckIn, BodyMeasurement, PersonalRecord
+from strava_integration import strava_api
 db.init_app(app)
 migrate = Migrate(app, db)
 
@@ -215,6 +216,58 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+# Strava Integration Routes
+@app.route("/connect-strava")
+@login_required
+def connect_strava():
+    redirect_uri = url_for('strava_callback', _external=True)
+    auth_url = strava_api.get_authorization_url(redirect_uri)
+    return redirect(auth_url)
+
+@app.route("/strava/callback")
+@login_required
+def strava_callback():
+    code = request.args.get('code')
+    if not code:
+        flash("Strava authorization failed.", "error")
+        return redirect(url_for('index'))
+    
+    token_data = strava_api.exchange_code_for_token(code)
+    if token_data:
+        flash("Strava connected successfully!", "success")
+    else:
+        flash("Failed to connect Strava. Please try again.", "error")
+    
+    return redirect(url_for('index'))
+
+@app.route("/disconnect-strava")
+@login_required
+def disconnect_strava():
+    # Clear Strava session data
+    session.pop('strava_access_token', None)
+    session.pop('strava_refresh_token', None)
+    session.pop('strava_expires_at', None)
+    session.pop('strava_athlete_id', None)
+    
+    flash("Strava disconnected successfully.", "success")
+    return redirect(url_for('index'))
+
+@app.route("/api/strava/recovery-metrics")
+@login_required
+def get_strava_recovery_metrics():
+    if not strava_api.is_connected():
+        return jsonify({"error": "Strava not connected"}), 400
+    
+    try:
+        metrics = strava_api.get_recovery_metrics()
+        if metrics:
+            return jsonify(metrics)
+        else:
+            return jsonify({"error": "Unable to fetch Strava data"}), 500
+    except Exception as e:
+        logging.error(f"Error fetching Strava recovery metrics: {e}")
+        return jsonify({"error": "Failed to fetch recovery data"}), 500
 
 # Password Reset Routes
 @app.route("/forgot-password", methods=["GET", "POST"])

@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Progress data not available:', error);
     }
     
+    // Initialize Strava integration
+    initializeStrava();
+    
     // Check if profile setup is visible (indicates new user)
     const profileSetup = document.getElementById('profile-setup');
     if (profileSetup && profileSetup.style.display !== 'none') {
@@ -1006,11 +1009,138 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Strava Integration Functions
+function initializeStrava() {
+    checkStravaConnection();
+}
+
+async function checkStravaConnection() {
+    try {
+        const response = await fetch('/api/strava/recovery-metrics', {
+            credentials: 'same-origin'
+        });
+        
+        if (response.ok) {
+            // Strava is connected, load metrics
+            const metrics = await response.json();
+            displayStravaMetrics(metrics);
+            updateStravaStatus(true);
+        } else {
+            // Strava not connected, show connect button
+            updateStravaStatus(false);
+        }
+    } catch (error) {
+        console.log('Strava not connected:', error);
+        updateStravaStatus(false);
+    }
+}
+
+function updateStravaStatus(isConnected) {
+    const stravaStatus = document.getElementById('strava-status');
+    const stravaMetrics = document.getElementById('strava-metrics');
+    const stravaConnect = document.getElementById('strava-connect');
+    
+    if (!stravaStatus || !stravaMetrics || !stravaConnect) return;
+    
+    if (isConnected) {
+        stravaStatus.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-900 text-green-300">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.599h4.172L10.463 0l-7 13.828h4.172"/>
+                </svg>
+                Connected
+            </span>
+            <button onclick="disconnectStrava()" class="text-xs text-thrshld-gray-medium hover:text-thrshld-primary">Disconnect</button>
+        `;
+        stravaMetrics.style.display = 'block';
+        stravaConnect.style.display = 'none';
+    } else {
+        stravaStatus.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                Not Connected
+            </span>
+        `;
+        stravaMetrics.style.display = 'none';
+        stravaConnect.style.display = 'block';
+    }
+}
+
+function displayStravaMetrics(metrics) {
+    if (!metrics) return;
+    
+    // Update training load
+    const trainingLoadEl = document.getElementById('training-load');
+    if (trainingLoadEl && metrics.training_load) {
+        trainingLoadEl.textContent = metrics.training_load.average_per_session;
+    }
+    
+    // Update weekly volume
+    const weeklyVolumeEl = document.getElementById('weekly-volume');
+    if (weeklyVolumeEl && metrics.volume) {
+        weeklyVolumeEl.textContent = metrics.volume.weekly_distance + 'km';
+    }
+    
+    // Update activity count
+    const activityCountEl = document.getElementById('activity-count');
+    if (activityCountEl && metrics.volume) {
+        activityCountEl.textContent = metrics.volume.activities_count;
+    }
+    
+    // Update readiness score
+    const readinessScoreEl = document.getElementById('readiness-score');
+    if (readinessScoreEl && metrics.readiness) {
+        readinessScoreEl.textContent = metrics.readiness.status;
+        
+        // Color based on readiness
+        readinessScoreEl.className = 'text-2xl font-bold';
+        if (metrics.readiness.score >= 85) {
+            readinessScoreEl.classList.add('text-green-400');
+        } else if (metrics.readiness.score >= 70) {
+            readinessScoreEl.classList.add('text-yellow-400');
+        } else {
+            readinessScoreEl.classList.add('text-red-400');
+        }
+    }
+    
+    // Update recovery recommendation
+    const recommendationEl = document.getElementById('recovery-recommendation');
+    if (recommendationEl && metrics.readiness) {
+        recommendationEl.querySelector('p').textContent = metrics.readiness.recommendation;
+    }
+}
+
+function connectStrava() {
+    window.location.href = '/connect-strava';
+}
+
+async function disconnectStrava() {
+    if (confirm('Are you sure you want to disconnect Strava? You will lose access to real training data.')) {
+        try {
+            const response = await fetch('/disconnect-strava', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            
+            if (response.ok) {
+                updateStravaStatus(false);
+                showSuccess('Strava disconnected successfully');
+            } else {
+                showError('Failed to disconnect Strava');
+            }
+        } catch (error) {
+            console.error('Error disconnecting Strava:', error);
+            showError('Failed to disconnect Strava');
+        }
+    }
+}
+
 // Export functions for testing or external use
 window.THRSHLD = {
     showTab,
     editGoal,
     setLoading,
     showError,
-    showSuccess
+    showSuccess,
+    connectStrava,
+    disconnectStrava
 };

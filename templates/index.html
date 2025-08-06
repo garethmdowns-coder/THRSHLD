@@ -191,26 +191,54 @@
 
     <!-- Today Tab -->
     <div id="today-content" class="tab-content" style="display: none;">
-        <!-- Recovery Metrics -->
+        <!-- Recovery Metrics / Strava Integration -->
         <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
-            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recovery Metrics</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-2xl font-bold text-thrshld-primary">7.2h</div>
-                    <div class="text-sm text-thrshld-gray-medium">Sleep</div>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-thrshld-primary">Recovery Metrics</h3>
+                <div id="strava-status" class="flex items-center space-x-2">
+                    <!-- Strava connection status will be populated here -->
                 </div>
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-2xl font-bold text-thrshld-primary">82</div>
-                    <div class="text-sm text-thrshld-gray-medium">HRV</div>
+            </div>
+            
+            <!-- Strava Connected Content -->
+            <div id="strava-metrics" style="display: none;">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div id="training-load" class="text-2xl font-bold text-thrshld-primary">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Training Load</div>
+                    </div>
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div id="weekly-volume" class="text-2xl font-bold text-thrshld-primary">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Weekly km</div>
+                    </div>
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div id="activity-count" class="text-2xl font-bold text-thrshld-primary">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Activities</div>
+                    </div>
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div id="readiness-score" class="text-2xl font-bold text-green-400">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Readiness</div>
+                    </div>
                 </div>
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-2xl font-bold text-thrshld-primary">58</div>
-                    <div class="text-sm text-thrshld-gray-medium">RHR</div>
+                
+                <!-- Readiness Recommendation -->
+                <div id="recovery-recommendation" class="mt-4 p-3 bg-thrshld-bg-primary rounded-xl">
+                    <p class="text-sm text-thrshld-gray-medium text-center">--</p>
                 </div>
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-2xl font-bold text-green-400">Good</div>
-                    <div class="text-sm text-thrshld-gray-medium">Recovery</div>
+            </div>
+            
+            <!-- Strava Not Connected Content -->
+            <div id="strava-connect" class="text-center py-8">
+                <div class="mb-4">
+                    <svg class="w-12 h-12 mx-auto text-thrshld-gray-medium mb-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.599h4.172L10.463 0l-7 13.828h4.172"/>
+                    </svg>
+                    <h4 class="text-lg font-semibold text-thrshld-primary mb-2">Connect Strava</h4>
+                    <p class="text-sm text-thrshld-gray-medium mb-4">Connect your Strava account to see real training data and recovery insights</p>
                 </div>
+                <button onclick="connectStrava()" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                    Connect Strava
+                </button>
             </div>
         </div>
 

@@ -55,6 +55,13 @@ User onboarding preference: Profile setup must be completed before accessing any
 - **API Configuration**: Environment variable configuration for API key management
 - **Prompt Engineering**: Contextual prompts using user goals and check-in data
 
+### Strava Integration
+- **Strava API**: OAuth 2.0 integration for accessing real fitness data
+- **Recovery Metrics**: Training load analysis, weekly volume tracking, activity counts
+- **Authorization Flow**: Secure OAuth flow with token refresh capabilities
+- **Real-time Data**: Replaces placeholder recovery metrics with actual Strava activity data
+- **Data Processing**: Calculates readiness scores and recovery recommendations based on training load
+
 ### Frontend Libraries
 - **Tailwind CSS**: CDN-based utility-first CSS framework
 - **Chart.js**: Interactive charts for progress analytics and data visualization
