@@ -81,6 +81,7 @@ def index():
 @login_required
 def profile_setup():
     # Show profile setup page for new users
+    logging.debug(f"Profile setup accessed by user: {current_user.email}")
     return render_template("profile_setup.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -110,9 +111,15 @@ def login():
                 logging.debug(f"User logged in successfully: {user.email}")
                 
                 # Check if user needs to complete profile setup
-                if not user.profile or not user.profile.name:
+                has_profile = user.profile is not None
+                has_name = has_profile and user.profile.name
+                logging.debug(f"Has profile: {has_profile}, Has name: {has_name}")
+                
+                if not has_profile or not has_name:
+                    logging.debug("Redirecting to profile setup")
                     return redirect(url_for("profile_setup"))
                 else:
+                    logging.debug("Redirecting to index")
                     return redirect(url_for("index"))
             else:
                 flash("Invalid email or password")
