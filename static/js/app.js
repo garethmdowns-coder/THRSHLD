@@ -76,6 +76,18 @@ function initializeEventListeners() {
         completeWorkoutBtn.addEventListener('click', handleCompleteWorkout);
     }
     
+    // Profile button in header
+    const profileBtn = document.getElementById('profile-btn');
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => showTab('profile'));
+    }
+    
+    // Edit profile button
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    if (editProfileBtn) {
+        editProfileBtn.addEventListener('click', showEditProfile);
+    }
+    
     // Auto-resize textareas
     document.querySelectorAll('textarea').forEach(textarea => {
         textarea.addEventListener('input', function() {
@@ -163,10 +175,19 @@ async function handleProfileSubmission(event) {
         const data = await response.json();
         
         if (response.ok) {
-            showGoalsPage();
-            showSuccess('Profile created successfully!');
+            // Check if we're editing or creating
+            const title = document.querySelector('#profile-setup h1');
+            if (title && title.textContent === 'Edit Profile') {
+                // Return to profile tab after editing
+                showTab('profile');
+                showSuccess('Profile updated successfully!');
+            } else {
+                // New profile - continue to goals
+                showGoalsPage();
+                showSuccess('Profile created successfully!');
+            }
         } else {
-            showError(data.error || 'Failed to create profile');
+            showError(data.error || 'Failed to save profile');
         }
     } catch (error) {
         console.error('Profile submission error:', error);
@@ -237,6 +258,64 @@ function hideAllPages() {
         const page = document.getElementById(pageId);
         if (page) page.style.display = 'none';
     });
+}
+
+function showEditProfile() {
+    // Show the profile setup form but with editing functionality
+    hideAllPages();
+    const profileSetup = document.getElementById('profile-setup');
+    if (profileSetup) {
+        profileSetup.style.display = 'block';
+        
+        // Show back button for editing
+        const backBtn = document.getElementById('profile-back-btn');
+        if (backBtn) backBtn.style.display = 'flex';
+        
+        // Change form title for editing
+        const title = profileSetup.querySelector('h1');
+        if (title) title.textContent = 'Edit Profile';
+        
+        // Change description
+        const description = profileSetup.querySelector('p');
+        if (description) description.textContent = 'Update your profile information';
+        
+        // Change button text
+        const submitBtn = profileSetup.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = 'Save Changes';
+        
+        // Populate form with current data
+        populateProfileForm();
+        
+        // Hide app navigation for full-screen editing
+        const navigation = document.getElementById('app-navigation');
+        const header = document.getElementById('app-header');
+        if (navigation) navigation.style.display = 'none';
+        if (header) header.style.display = 'none';
+    }
+}
+
+function populateProfileForm() {
+    // Get current profile data from the profile tab
+    const profileName = document.getElementById('profile-name');
+    const profileAge = document.getElementById('profile-age');
+    const profileGender = document.getElementById('profile-gender');
+    
+    // Populate form fields
+    const nameInput = document.getElementById('name-input');
+    const ageInput = document.getElementById('age-input');
+    const genderInput = document.getElementById('gender-input');
+    
+    if (profileName && nameInput) {
+        nameInput.value = profileName.textContent.trim();
+    }
+    if (profileAge && ageInput) {
+        const age = profileAge.textContent.trim();
+        if (age !== '--') ageInput.value = age;
+    }
+    if (profileGender && genderInput) {
+        const gender = profileGender.textContent.trim().toLowerCase();
+        if (gender !== '--') genderInput.value = gender;
+    }
 }
 
 function showMainApp() {
