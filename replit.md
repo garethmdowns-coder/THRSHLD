@@ -2,7 +2,15 @@
 
 ## Overview
 
-THRSHLD is a personalized fitness coaching web application that helps users set fitness goals, track daily check-ins, and receive AI-powered workout recommendations. The app uses OpenAI's GPT-4 to generate customized workout plans based on user goals and daily status updates. Built as a mobile-first progressive web app with a clean, minimalist interface focused on simplicity and user engagement.
+THRSHLD is a personalized fitness coaching web application that helps users set fitness goals, track daily check-ins, and receive AI-powered workout recommendations. The app uses OpenAI's GPT-4o to generate customized workout plans based on user goals and daily status updates. Built as a mobile-first progressive web app with a clean, minimalist interface focused on simplicity and user engagement.
+
+## Recent Changes (August 2025)
+- **Programme Regeneration System IMPLEMENTED**: Updated 1RM values now correctly regenerate workout programming with exact percentage calculations
+- **Database Performance Data**: Successfully storing and retrieving 1RM values (Squat: 140kg, Bench: 110kg, Deadlift: 160kg, OHP: 75kg)  
+- **AI Workout Programming**: Enhanced prompts ensure AI uses exact 1RM percentages for strength exercises (e.g., "85% of 140kg = 119kg")
+- **Authentication Flow**: Improved Strava OAuth integration to preserve login state during external redirects
+- **Goals Setup Page**: Implemented separate goals configuration page accessible after profile setup
+- **Error Handling**: Fixed profile saving functionality and database transaction management
 
 ## User Preferences
 

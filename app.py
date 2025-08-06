@@ -245,7 +245,8 @@ def strava_callback():
         if user_id:
             user = User.query.get(user_id)
             if user:
-                login_user(user)
+                login_user(user, remember=True)
+                session.permanent = True
     
     # Now process the Strava token
     if current_user.is_authenticated:
@@ -495,10 +496,8 @@ def check_in():
         checkin.notes = status
         db.session.add(checkin)
         
-        # Get user goals for workout generation
+        # Get user goals - use defaults if not set  
         goals = current_user.goals
-        if not goals:
-            return jsonify({"error": "Please set your fitness goals first before checking in."}), 400
 
         # Get recent check-ins for context
         recent_checkins = CheckIn.query.filter_by(user_id=current_user.id).order_by(CheckIn.date.desc()).limit(3).all()
@@ -517,13 +516,13 @@ USER PROFILE:
 - Weight: {profile.weight_kg if profile else 'Unknown'}kg
 - Preferred Intensity: {profile.preferred_intensity if profile else 'moderate'}
 
-CURRENT 1RM DATA (for percentage calculations):
-- Squat: {profile.squat_1rm if profile and profile.squat_1rm else 'Unknown'}kg
-- Bench Press: {profile.bench_1rm if profile and profile.bench_1rm else 'Unknown'}kg
-- Deadlift: {profile.deadlift_1rm if profile and profile.deadlift_1rm else 'Unknown'}kg
-- Overhead Press: {profile.overhead_press_1rm if profile and profile.overhead_press_1rm else 'Unknown'}kg
-- Max Pull-ups: {profile.max_pull_ups if profile and profile.max_pull_ups else 'Unknown'}
-- 5K Time: {profile.five_km_time if profile and profile.five_km_time else 'Unknown'}
+CURRENT 1RM DATA (MUST USE FOR EXACT PERCENTAGE CALCULATIONS):
+- Squat 1RM: {profile.squat_1rm if profile and profile.squat_1rm else 'Not set - use bodyweight exercises'}kg
+- Bench Press 1RM: {profile.bench_1rm if profile and profile.bench_1rm else 'Not set - use bodyweight exercises'}kg  
+- Deadlift 1RM: {profile.deadlift_1rm if profile and profile.deadlift_1rm else 'Not set - use bodyweight exercises'}kg
+- Overhead Press 1RM: {profile.overhead_press_1rm if profile and profile.overhead_press_1rm else 'Not set - use bodyweight exercises'}kg
+- Max Pull-ups: {profile.max_pull_ups if profile and profile.max_pull_ups else 'Not set'}
+- 5K Time: {profile.five_km_time if profile and profile.five_km_time else 'Not set'}
 
 USER GOALS: {goals.to_dict() if goals else 'General fitness'}
 
@@ -533,10 +532,12 @@ RECENT WORKOUT HISTORY: {recent_history[-3:] if len(recent_history) > 1 else 'Fi
 
 Create a highly detailed, personalized workout for today. Requirements:
 
-STRENGTH EXERCISES (if applicable):
-- Specify exact weight as % of 1RM (e.g., "75% of 1RM = 90kg") OR RPE scale (1-10)
-- Include sets x reps format (e.g., "4 sets of 6 reps")
-- Add rest periods between sets
+STRENGTH EXERCISES - CRITICAL REQUIREMENTS:
+- ALWAYS calculate exact weights using 1RM percentages when 1RM data is available
+- Format: "85% of [1RM_VALUE]kg = [CALCULATED_WEIGHT]kg" (e.g., "85% of 140kg = 119kg")  
+- If no 1RM available, use RPE scale (1-10) or bodyweight alternatives
+- Include sets x reps format (e.g., "4 sets of 5 reps")
+- Add rest periods between sets  
 - Include form cues and safety notes
 
 CONDITIONING/CARDIO (if applicable):
