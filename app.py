@@ -226,9 +226,13 @@ def connect_strava():
     return redirect(auth_url)
 
 @app.route("/strava/callback")
-@login_required
 def strava_callback():
-    code = request.args.get('code')
+    # Check if user is logged in, if not redirect to login
+    if not current_user.is_authenticated:
+        session['strava_code'] = request.args.get('code')
+        return redirect(url_for('index'))
+    
+    code = request.args.get('code') or session.pop('strava_code', None)
     if not code:
         flash("Strava authorization failed.", "error")
         return redirect(url_for('index'))
