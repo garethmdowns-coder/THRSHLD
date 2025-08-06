@@ -24,6 +24,12 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 }
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Session configuration
+app.config['SESSION_COOKIE_SECURE'] = False  # Allow HTTP for development
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+
 # Mail configuration
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', '587'))
@@ -64,6 +70,7 @@ def index():
         profile = current_user.profile
         if not profile or not profile.name:
             # Redirect new users to profile setup
+            logging.debug("Index: User needs profile setup, redirecting")
             return redirect("/profile-setup")
         
         # Get user data from database for returning users
@@ -81,7 +88,11 @@ def index():
 @login_required
 def profile_setup():
     # Show profile setup page for new users
-    logging.debug(f"Profile setup accessed by user: {current_user.email}")
+    from flask import session
+    logging.debug(f"Profile setup accessed by user: {current_user.email if current_user.is_authenticated else 'Anonymous'}")
+    logging.debug(f"Session in profile setup: {dict(session)}")
+    logging.debug(f"User authenticated: {current_user.is_authenticated}")
+    
     # Check if user already has a complete profile
     if current_user.profile and current_user.profile.name:
         logging.debug("User already has profile, redirecting to main app")
@@ -91,7 +102,7 @@ def profile_setup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect("/")
         
     if request.method == "POST":
         email = request.form.get("email")
@@ -111,8 +122,11 @@ def login():
             logging.debug(f"Password valid: {password_valid}")
             
             if password_valid:
+                from flask import session
+                session.permanent = True
                 login_user(user, remember=True)
                 logging.debug(f"User logged in successfully: {user.email}")
+                logging.debug(f"Session after login: {dict(session)}")
                 
                 # Check if user needs to complete profile setup
                 has_profile = user.profile is not None
