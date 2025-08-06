@@ -852,6 +852,52 @@ function loadProgressTabData(tabName) {
     }
 }
 
+// Progress Tab Functions
+function loadStrengthData() {
+    console.log('Loading strength data...');
+    // For MVP, show placeholder content
+    const strengthContent = document.querySelector('[data-tab="strength"]');
+    if (strengthContent) {
+        strengthContent.innerHTML = `
+            <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
+                <h3 class="text-lg font-bold text-thrshld-primary mb-4">Strength Progress</h3>
+                <p class="text-thrshld-gray-medium">Track your 1RM progress and strength gains over time.</p>
+                <p class="text-sm text-thrshld-gray-medium mt-2">Coming soon - detailed strength analytics and progression charts.</p>
+            </div>
+        `;
+    }
+}
+
+function loadBodyMetricsData() {
+    console.log('Loading body metrics data...');
+    // For MVP, show placeholder content
+    const bodyContent = document.querySelector('[data-tab="body"]');
+    if (bodyContent) {
+        bodyContent.innerHTML = `
+            <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
+                <h3 class="text-lg font-bold text-thrshld-primary mb-4">Body Metrics</h3>
+                <p class="text-thrshld-gray-medium">Monitor weight, body composition, and measurements.</p>
+                <p class="text-sm text-thrshld-gray-medium mt-2">Coming soon - body metrics tracking and trends.</p>
+            </div>
+        `;
+    }
+}
+
+function loadWellnessData() {
+    console.log('Loading wellness data...');
+    // For MVP, show placeholder content
+    const wellnessContent = document.querySelector('[data-tab="wellness"]');
+    if (wellnessContent) {
+        wellnessContent.innerHTML = `
+            <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
+                <h3 class="text-lg font-bold text-thrshld-primary mb-4">Wellness</h3>
+                <p class="text-thrshld-gray-medium">Track sleep, recovery, and wellness metrics.</p>
+                <p class="text-sm text-thrshld-gray-medium mt-2">Coming soon - wellness analytics and recovery insights.</p>
+            </div>
+        `;
+    }
+}
+
 function loadOverviewData() {
     fetch('/api/progress/overview')
         .then(response => response.json())
