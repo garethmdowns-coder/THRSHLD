@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-6">
+    <!-- Today Tab -->
+    <div id="today-content" class="tab-content">
+        <!-- Goal Setting Card -->
+        <div id="goal-setup" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: {% if not user_data.goal %}block{% else %}none{% endif %}">
+            <div class="text-center mb-4">
+                <div class="w-16 h-16 bg-thrshld-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-thrshld-primary mb-2">Welcome to THRSHLD</h2>
+                <p class="text-thrshld-gray-medium text-sm">Let's start by setting your fitness goal</p>
+            </div>
+            
+            <form id="goal-form" class="space-y-4">
+                <div>
+                    <label for="goal-input" class="block text-sm font-medium text-thrshld-primary mb-2">Your Fitness Goal</label>
+                    <textarea id="goal-input" 
+                              placeholder="e.g., Build strength, lose weight, improve endurance, train for a marathon..."
+                              class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-thrshld-primary focus:border-transparent"
+                              rows="3"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-thrshld-primary text-white py-3 px-6 rounded-xl font-medium hover:bg-thrshld-secondary transition-colors">
+                    Set My Goal
+                </button>
+            </form>
+        </div>
+
+        <!-- Current Goal Display -->
+        <div id="goal-display" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                    <h3 class="text-sm font-medium text-thrshld-gray-medium uppercase tracking-wide mb-2">Your Goal</h3>
+                    <p id="current-goal" class="text-thrshld-primary font-medium">{{ user_data.goal }}</p>
+                </div>
+                <button onclick="editGoal()" class="p-2 text-thrshld-gray-medium hover:text-thrshld-primary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Check-in Card -->
+        <div id="checkin-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">How are you feeling today?</h3>
+            
+            <form id="checkin-form" class="space-y-4">
+                <div>
+                    <textarea id="status-input" 
+                              placeholder="Share how you're feeling, your energy level, any soreness, or what you want to focus on today..."
+                              class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-thrshld-primary focus:border-transparent"
+                              rows="3"></textarea>
+                </div>
+                <button type="submit" id="checkin-btn" class="w-full bg-thrshld-primary text-white py-3 px-6 rounded-xl font-medium hover:bg-thrshld-secondary transition-colors">
+                    Get My Workout
+                </button>
+            </form>
+        </div>
+
+        <!-- Today's Workout -->
+        <div id="workout-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: none;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-thrshld-primary">Today's Workout</h3>
+                <span class="text-sm text-thrshld-gray-medium bg-gray-100 px-3 py-1 rounded-full">AI Generated</span>
+            </div>
+            
+            <div id="workout-content" class="prose prose-sm max-w-none text-thrshld-primary mb-6">
+                <!-- Workout content will be inserted here -->
+            </div>
+            
+            <button id="start-workout-btn" class="w-full bg-thrshld-primary text-white py-4 px-6 rounded-xl font-medium text-lg hover:bg-thrshld-secondary transition-colors">
+                Start Workout
+            </button>
+        </div>
+
+        <!-- Progress Widget -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Quick Stats</h3>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="text-center">
+                    <div id="completed-workouts" class="text-2xl font-bold text-thrshld-primary">{{ user_data.stats.completed_workouts or 0 }}</div>
+                    <div class="text-xs text-thrshld-gray-medium">Workouts</div>
+                </div>
+                <div class="text-center">
+                    <div id="current-streak" class="text-2xl font-bold text-thrshld-primary">{{ user_data.stats.current_streak or 0 }}</div>
+                    <div class="text-xs text-thrshld-gray-medium">Day Streak</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-thrshld-primary">{{ user_data.history|length or 0 }}</div>
+                    <div class="text-xs text-thrshld-gray-medium">Sessions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Tab -->
+    <div id="progress-content" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Your Progress</h2>
+        
+        <!-- Workout History -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recent Sessions</h3>
+            <div id="workout-history" class="space-y-4">
+                {% if user_data.history %}
+                    {% for session in user_data.history[-5:] %}
+                    <div class="border-l-4 border-thrshld-primary pl-4 py-2">
+                        <div class="font-medium text-thrshld-primary text-sm">{{ session.check_in }}</div>
+                        <div class="text-xs text-thrshld-gray-medium mt-1">AI workout generated</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8">
+                        <div class="text-thrshld-gray-medium mb-2">
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </div>
+                        <p class="text-thrshld-gray-medium">No workout sessions yet</p>
+                        <p class="text-xs text-thrshld-gray-medium">Complete your first check-in to get started</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Statistics Overview -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Overview</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                    <div class="text-3xl font-bold text-thrshld-primary">{{ user_data.stats.completed_workouts or 0 }}</div>
+                    <div class="text-sm text-thrshld-gray-medium">Total Workouts</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                    <div class="text-3xl font-bold text-thrshld-primary">{{ user_data.stats.current_streak or 0 }}</div>
+                    <div class="text-sm text-thrshld-gray-medium">Current Streak</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recovery Tab -->
+    <div id="recovery-content" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Recovery</h2>
+        
+        <!-- Recovery Metrics -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recovery Metrics</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between py-3">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-400 rounded-full mr-3"></div>
+                        <div>
+                            <div class="font-medium text-thrshld-primary">HRV Score</div>
+                            <div class="text-xs text-thrshld-gray-medium">Heart Rate Variability</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-thrshld-primary">Good</div>
+                        <div class="text-xs text-thrshld-gray-medium">Ready to train</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between py-3">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-blue-400 rounded-full mr-3"></div>
+                        <div>
+                            <div class="font-medium text-thrshld-primary">Sleep Quality</div>
+                            <div class="text-xs text-thrshld-gray-medium">Last night</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-thrshld-primary">7.2h</div>
+                        <div class="text-xs text-thrshld-gray-medium">Good quality</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between py-3">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-orange-400 rounded-full mr-3"></div>
+                        <div>
+                            <div class="font-medium text-thrshld-primary">Readiness</div>
+                            <div class="text-xs text-thrshld-gray-medium">Overall assessment</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-thrshld-primary">85%</div>
+                        <div class="text-xs text-thrshld-gray-medium">Optimal</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recovery Tips -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recovery Tips</h3>
+            <div class="space-y-3">
+                <div class="flex items-start">
+                    <div class="w-2 h-2 bg-thrshld-primary rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <div class="text-sm text-thrshld-primary">Stay hydrated throughout the day</div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-2 h-2 bg-thrshld-primary rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <div class="text-sm text-thrshld-primary">Get 7-9 hours of quality sleep</div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-2 h-2 bg-thrshld-primary rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <div class="text-sm text-thrshld-primary">Include active recovery sessions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Library Tab -->
+    <div id="library-content" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Exercise Library</h2>
+        
+        <!-- Coming Soon -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-thrshld-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-thrshld-primary mb-2">Exercise Library</h3>
+            <p class="text-thrshld-gray-medium text-sm mb-4">Coming soon - browse our comprehensive exercise database with video demonstrations and form tips.</p>
+            <button class="bg-gray-100 text-thrshld-primary px-4 py-2 rounded-lg font-medium text-sm" disabled>
+                Coming Soon
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-8 text-center max-w-sm mx-4">
+        <div class="w-12 h-12 border-4 border-thrshld-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <h3 class="text-lg font-bold text-thrshld-primary mb-2">Creating Your Workout</h3>
+        <p class="text-thrshld-gray-medium text-sm">Our AI is personalizing your training...</p>
+    </div>
+</div>
+
+<!-- Error Toast -->
+<div id="error-toast" class="fixed top-4 left-4 right-4 bg-red-500 text-white p-4 rounded-xl shadow-lg transform -translate-y-full transition-transform z-50">
+    <div class="flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span id="error-message"></span>
+    </div>
+</div>
+
+<!-- Success Toast -->
+<div id="success-toast" class="fixed top-4 left-4 right-4 bg-green-500 text-white p-4 rounded-xl shadow-lg transform -translate-y-full transition-transform z-50">
+    <div class="flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span id="success-message"></span>
+    </div>
+</div>
+{% endblock %}

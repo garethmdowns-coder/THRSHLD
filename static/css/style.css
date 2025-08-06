@@ -1,0 +1,150 @@
+/* Custom styles for THRSHLD */
+
+/* Smooth transitions */
+* {
+    transition: all 0.2s ease;
+}
+
+/* Active navigation tab */
+.nav-tab.active {
+    color: #000000;
+}
+
+.nav-tab.active svg {
+    stroke-width: 2.5;
+}
+
+/* Tab content transitions */
+.tab-content {
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading spinner */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Toast animations */
+.toast-show {
+    transform: translateY(0) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Form focus states */
+input:focus,
+textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Button press effect */
+button:active {
+    transform: translateY(1px);
+}
+
+/* Workout content styling */
+#workout-content {
+    line-height: 1.6;
+}
+
+#workout-content h3 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #000000;
+}
+
+#workout-content p {
+    margin-bottom: 0.5rem;
+}
+
+#workout-content ul,
+#workout-content ol {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+#workout-content li {
+    margin-bottom: 0.25rem;
+}
+
+/* Progressive enhancement */
+.js-enabled {
+    /* Styles for when JavaScript is available */
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .max-w-lg {
+        max-width: 100%;
+    }
+    
+    .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .border-gray-200 {
+        border-color: #000000;
+    }
+    
+    .text-thrshld-gray-medium {
+        color: #333333;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark mode preparation */
+@media (prefers-color-scheme: dark) {
+    /* Future dark mode styles */
+}
