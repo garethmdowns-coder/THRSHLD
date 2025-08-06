@@ -50,6 +50,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access THRSHLD.'
+login_manager.session_protection = None  # Disable session protection for debugging
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -66,9 +67,14 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "your-openai-api-key")
 # Authentication routes
 @app.route("/")
 def index():
+    logging.debug(f"Index route accessed. User authenticated: {current_user.is_authenticated}")
+    
     if current_user.is_authenticated:
+        logging.debug(f"Authenticated user: {current_user.email}")
         # Check if user has completed profile setup
         profile = current_user.profile
+        logging.debug(f"User profile exists: {profile is not None}")
+        
         if not profile or not profile.name:
             # Show profile setup directly for new users
             logging.debug("Index: User needs profile setup, showing profile setup page")
@@ -77,27 +83,22 @@ def index():
         # Get user data from database for returning users
         logging.debug(f"Loading main app for user: {current_user.email}")
         try:
-            goals = current_user.goals
+            # Simplified user data loading to avoid errors
             user_data = {
-                'profile': profile.to_dict() if profile and hasattr(profile, 'to_dict') else {'name': profile.name if profile else ''},
-                'goals': goals.to_dict() if goals and hasattr(goals, 'to_dict') else {},
-                'stats': get_user_stats(current_user.id) if hasattr(current_user, 'id') else {}
-            }
-            logging.debug(f"User data loaded successfully: {user_data}")
-            return render_template("index.html", user_data=user_data)
-        except Exception as e:
-            logging.error(f"Error loading user data: {e}")
-            import traceback
-            logging.error(f"Full traceback: {traceback.format_exc()}")
-            # Fallback to simple profile data
-            user_data = {
-                'profile': {'name': profile.name if profile else ''},
+                'profile': {'name': profile.name, 'age': profile.age, 'gender': profile.gender},
                 'goals': {},
                 'stats': {'total_workouts': 0, 'current_streak': 0, 'personal_records': 0}
             }
-            logging.debug(f"Using fallback user data: {user_data}")
+            logging.debug(f"User data prepared: {user_data}")
+            logging.debug("Rendering index.html template")
             return render_template("index.html", user_data=user_data)
+        except Exception as e:
+            logging.error(f"Error in index route: {e}")
+            import traceback
+            logging.error(f"Full traceback: {traceback.format_exc()}")
+            return f"Error loading app: {str(e)}", 500
     else:
+        logging.debug("User not authenticated, showing auth page")
         return render_template("auth.html")
 
 @app.route("/profile-setup")
@@ -154,8 +155,19 @@ def login():
                     logging.debug("User needs profile setup, rendering profile setup template directly")
                     return render_template("profile_setup.html")
                 else:
-                    logging.debug("User has complete profile, redirecting to main app")
-                    return redirect("/")
+                    logging.debug("User has complete profile, loading main app directly")
+                    # Load main app directly instead of redirecting
+                    try:
+                        user_data = {
+                            'profile': {'name': user.profile.name, 'age': user.profile.age, 'gender': user.profile.gender},
+                            'goals': {},
+                            'stats': {'total_workouts': 0, 'current_streak': 0, 'personal_records': 0}
+                        }
+                        logging.debug(f"Rendering index.html with user data: {user_data}")
+                        return render_template("index.html", user_data=user_data)
+                    except Exception as e:
+                        logging.error(f"Error loading user data in login: {e}")
+                        return render_template("index.html", user_data={'profile': {'name': user.profile.name}, 'goals': {}, 'stats': {}})
             else:
                 flash("Invalid email or password")
                 return render_template("auth.html")
