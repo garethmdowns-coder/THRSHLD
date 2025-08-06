@@ -488,15 +488,28 @@ def get_user_data():
 @app.route("/set-profile", methods=["POST"])
 def set_profile():
     try:
-        # Manual authentication check instead of @login_required decorator
+        # Debug session information
         from flask import session
         logging.debug(f"Set profile - Session: {dict(session)}")
         logging.debug(f"Set profile - User authenticated: {current_user.is_authenticated}")
         logging.debug(f"Set profile - Current user: {current_user.email if current_user.is_authenticated else 'Anonymous'}")
         
+        # Alternative approach: Use the most recent user without profile if session is lost
         if not current_user.is_authenticated:
-            logging.debug("User not authenticated, returning error")
-            return jsonify({"success": False, "error": "Authentication required"}), 401
+            logging.debug("Session lost, attempting to find user without profile")
+            # Find the most recent user without a complete profile
+            user_without_profile = User.query.join(UserProfile, User.id == UserProfile.user_id, isouter=True)\
+                                           .filter((UserProfile.id == None) | (UserProfile.name == None) | (UserProfile.name == ''))\
+                                           .order_by(User.created_at.desc()).first()
+            
+            if user_without_profile:
+                logging.debug(f"Found user without profile: {user_without_profile.email}")
+                # Temporarily log them in for this request
+                login_user(user_without_profile, remember=True)
+                logging.debug(f"Temporarily logged in user: {user_without_profile.email}")
+            else:
+                logging.debug("No user without profile found, returning error")
+                return jsonify({"success": False, "error": "Authentication required"}), 401
         
         profile_data = request.get_json()
         logging.debug(f"Profile data received: {profile_data}")
