@@ -213,15 +213,17 @@
             
             const formData = new FormData(e.target);
             const profileData = {
-                name: formData.get('name'),
-                age: formData.get('age'),
-                gender: formData.get('gender'),
-                weight: formData.get('weight'),
-                height: formData.get('height'),
-                experience: formData.get('experience'),
-                training_location: formData.get('training_location'),
-                training_days: formData.get('training_days')
+                name: formData.get('name') || '',
+                age: formData.get('age') || '',
+                gender: formData.get('gender') || '',
+                weight: formData.get('weight') || '',
+                height: formData.get('height') || '',
+                experience: formData.get('experience') || '',
+                training_location: formData.get('training_location') || '',
+                training_days: formData.get('training_days') || ''
             };
+
+            console.log('Submitting profile data:', profileData);
 
             // Validate required fields
             if (!profileData.name.trim()) {
@@ -236,13 +238,21 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(profileData)
                 });
 
-                const data = await response.json();
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
 
-                if (response.ok) {
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
                     // Redirect to main app
                     window.location.href = '/';
                 } else {
@@ -250,7 +260,7 @@
                 }
             } catch (error) {
                 console.error('Profile setup error:', error);
-                showError('Network error. Please try again.');
+                showError(`Network error: ${error.message}`);
             } finally {
                 setLoading(false);
             }
