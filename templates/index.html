@@ -306,66 +306,121 @@
 
     <!-- Progress Tab -->
     <div id="progress-content" class="tab-content hidden">
-        <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Your Progress</h2>
+        <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Progress</h2>
         
-        <!-- Compound Lifts -->
-        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
-            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Compound Lifts</h3>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div>
-                        <div class="font-medium text-thrshld-primary">Squat</div>
-                        <div class="text-sm text-thrshld-gray-medium">Personal Record</div>
+        <div class="space-y-6">
+            <!-- Quick Stats -->
+            <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
+                <h3 class="text-xl font-bold text-thrshld-primary mb-4">Your Stats</h3>
+                <div class="grid grid-cols-2 gap-4" id="progress-stats">
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div class="text-2xl font-bold text-thrshld-accent" id="total-workouts">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Workouts</div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-thrshld-primary">225 lbs</div>
-                        <div class="text-xs text-thrshld-gray-medium">3 reps</div>
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div class="text-2xl font-bold text-thrshld-accent" id="current-streak">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Day Streak</div>
                     </div>
-                </div>
-                
-                <div class="flex items-center justify-between p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div>
-                        <div class="font-medium text-thrshld-primary">Bench Press</div>
-                        <div class="text-sm text-thrshld-gray-medium">Personal Record</div>
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div class="text-2xl font-bold text-thrshld-accent" id="personal-records">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Personal Records</div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-thrshld-primary">185 lbs</div>
-                        <div class="text-xs text-thrshld-gray-medium">5 reps</div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center justify-between p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div>
-                        <div class="font-medium text-thrshld-primary">Deadlift</div>
-                        <div class="text-sm text-thrshld-gray-medium">Personal Record</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-thrshld-primary">275 lbs</div>
-                        <div class="text-xs text-thrshld-gray-medium">1 rep</div>
+                    <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div class="text-2xl font-bold text-thrshld-accent" id="consistency">--</div>
+                        <div class="text-sm text-thrshld-gray-medium">Consistency</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Running Milestones -->
-        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
-            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Running Milestones</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-lg font-bold text-thrshld-primary">22:45</div>
-                    <div class="text-sm text-thrshld-gray-medium">Fastest 5K</div>
+            <!-- Navigation Tabs -->
+            <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
+                <div class="flex space-x-1 mb-6 bg-thrshld-bg-primary rounded-lg p-1">
+                    <button onclick="showProgressTab('overview')" id="progress-tab-overview" class="flex-1 py-2 px-4 text-sm font-medium rounded-md text-thrshld-primary bg-thrshld-accent">
+                        Overview
+                    </button>
+                    <button onclick="showProgressTab('strength')" id="progress-tab-strength" class="flex-1 py-2 px-4 text-sm font-medium rounded-md text-thrshld-gray-medium">
+                        Strength
+                    </button>
+                    <button onclick="showProgressTab('body')" id="progress-tab-body" class="flex-1 py-2 px-4 text-sm font-medium rounded-md text-thrshld-gray-medium">
+                        Body Metrics
+                    </button>
+                    <button onclick="showProgressTab('wellness')" id="progress-tab-wellness" class="flex-1 py-2 px-4 text-sm font-medium rounded-md text-thrshld-gray-medium">
+                        Wellness
+                    </button>
                 </div>
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-lg font-bold text-thrshld-primary">47:20</div>
-                    <div class="text-sm text-thrshld-gray-medium">Fastest 10K</div>
+
+                <!-- Overview Tab -->
+                <div id="progress-overview" class="progress-tab-content">
+                    <div class="space-y-4">
+                        <!-- Weekly Activity Chart -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Weekly Workout Frequency</h4>
+                            <canvas id="weekly-chart" width="400" height="200"></canvas>
+                        </div>
+                        
+                        <!-- Recent Workouts -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Recent Workouts</h4>
+                            <div id="recent-workouts-list" class="space-y-2">
+                                <!-- Workouts will be populated here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-lg font-bold text-thrshld-primary">1:42:15</div>
-                    <div class="text-sm text-thrshld-gray-medium">Half Marathon</div>
+
+                <!-- Strength Tab -->
+                <div id="progress-strength" class="progress-tab-content hidden">
+                    <div class="space-y-4">
+                        <!-- Personal Records -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Personal Records</h4>
+                            <div id="personal-records-list" class="space-y-2">
+                                <!-- Records will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Strength Progression Chart -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Strength Progression</h4>
+                            <canvas id="strength-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
-                    <div class="text-lg font-bold text-thrshld-gray-medium">--:--</div>
-                    <div class="text-sm text-thrshld-gray-medium">Marathon</div>
+
+                <!-- Body Metrics Tab -->
+                <div id="progress-body" class="progress-tab-content hidden">
+                    <div class="space-y-4">
+                        <!-- Weight Progression -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Weight Progression</h4>
+                            <canvas id="weight-chart" width="400" height="200"></canvas>
+                        </div>
+                        
+                        <!-- Body Measurements -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Body Measurements</h4>
+                            <div id="body-measurements" class="grid grid-cols-2 gap-4">
+                                <!-- Measurements will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wellness Tab -->
+                <div id="progress-wellness" class="progress-tab-content hidden">
+                    <div class="space-y-4">
+                        <!-- Wellness Trends -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Wellness Trends</h4>
+                            <canvas id="wellness-chart" width="400" height="200"></canvas>
+                        </div>
+                        
+                        <!-- Mood Distribution -->
+                        <div class="bg-thrshld-bg-primary rounded-xl p-4">
+                            <h4 class="text-lg font-semibold text-thrshld-primary mb-3">Mood Distribution</h4>
+                            <canvas id="mood-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -19,26 +19,33 @@ User onboarding preference: Profile setup must be completed before accessing any
 - **UI Framework**: Tailwind CSS for utility-first styling with custom dark color scheme
 - **JavaScript**: Vanilla JavaScript for client-side interactions and API communication
 - **Component Structure**: Modular tab-based interface (Today, Progress, Recovery, Library) with dynamic content loading
+- **Authentication Flow**: Login/registration screens with automatic redirection to main app
 - **Gated Onboarding**: Full-screen profile setup that blocks access to all other features until completed
+- **Progress Analytics**: Multi-tab progress interface with Chart.js integration for interactive data visualization
 
 ### Backend Architecture
-- **Web Framework**: Flask (Python) for lightweight web server and API endpoints
-- **Session Management**: Flask sessions with configurable secret key for user state
-- **API Design**: RESTful endpoints for profile setup (`/set-profile`), goal setting (`/set-goal`) and check-ins (`/check-in`)
-- **Error Handling**: Comprehensive input validation and error responses with proper HTTP status codes
-- **Logging**: Debug-level logging for development and troubleshooting
+- **Web Framework**: Flask (Python) with SQLAlchemy ORM for database operations
+- **Database Layer**: PostgreSQL with Flask-SQLAlchemy for data modeling and relationships
+- **Authentication**: Flask-Login for user session management and route protection
+- **API Design**: RESTful endpoints for profile (`/set-profile`), goals (`/set-goal`), check-ins (`/check-in`), and progress analytics
+- **Progress Analytics**: Multiple API endpoints (`/api/progress/*`) providing detailed charts and statistics
+- **Error Handling**: Comprehensive input validation, database transaction rollbacks, and proper HTTP status codes
+- **Logging**: Debug-level logging for development, authentication events, and database operations
 
 ### Data Storage
-- **File-Based Storage**: JSON file (`user_data.json`) for persisting user data
-- **Data Structure**: Comprehensive user data including profile information, goals, check-in history, workout history, and statistics
-- **Profile Data**: Name, gender, weight, height, date of birth, experience level, primary activity, training location
-- **Data Management**: Automatic initialization and graceful handling of missing/corrupted data files
-- **Statistics Tracking**: Workout completion counts, streaks, and personal records
+- **PostgreSQL Database**: Full database integration with SQLAlchemy ORM for robust data persistence
+- **Database Models**: User, UserProfile, UserGoals, Workout, Exercise, CheckIn, BodyMeasurement, PersonalRecord
+- **Data Relationships**: Proper foreign key relationships between users and their data
+- **Profile Data**: Name, age, gender, weight, height, date of birth, experience level, primary activity, training location
+- **Data Management**: Automatic table creation, transaction management, and data integrity
+- **Statistics Tracking**: Real-time calculation of workout counts, streaks, personal records, and progress metrics
 
 ### Authentication & Authorization
-- **Current State**: No authentication system implemented (single-user application)
-- **Session Security**: Basic session management with secret key configuration
-- **Future Consideration**: Ready for multi-user authentication implementation
+- **Flask-Login Integration**: Complete user authentication system with login/logout functionality
+- **User Registration**: Email-based account creation with password hashing (Werkzeug)
+- **Session Management**: Secure session handling with Flask-Login user loading
+- **Route Protection**: Login-required decorators protecting all user data endpoints
+- **Database Security**: User data isolation - users only access their own records
 
 ## External Dependencies
 
@@ -49,15 +56,21 @@ User onboarding preference: Profile setup must be completed before accessing any
 
 ### Frontend Libraries
 - **Tailwind CSS**: CDN-based utility-first CSS framework
+- **Chart.js**: Interactive charts for progress analytics and data visualization
 - **Heroicons**: Icon library for consistent UI elements
 - **Custom Styling**: Additional CSS for animations and theme customization
 
 ### Development Tools
 - **Python Libraries**: 
   - Flask for web framework
+  - Flask-SQLAlchemy for database ORM
+  - Flask-Login for authentication
+  - Flask-Migrate for database migrations
+  - Werkzeug for password hashing
   - Requests for HTTP client functionality
-  - Standard library modules (os, json, logging)
-- **Environment Configuration**: Environment variables for API keys and configuration
+  - SQLAlchemy for advanced database queries
+- **Database**: PostgreSQL with environment-based connection configuration
+- **Environment Configuration**: Environment variables for API keys, database connection, and session secrets
 
 ### Deployment Considerations
 - **Static Assets**: CSS and JavaScript files served through Flask's static file handling

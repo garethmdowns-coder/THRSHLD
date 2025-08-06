@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Load progress data when page loads
+    loadProgressData();
+    
     // Check if profile exists to determine app state
     fetch('/get-user-data')
         .then(response => response.json())
@@ -731,6 +734,137 @@ document.addEventListener('keydown', function(event) {
                 break;
         }
     }
+});
+
+// Progress Analytics Functions
+function showProgressTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('[id^="progress-tab-"]').forEach(btn => {
+        btn.classList.remove('bg-thrshld-accent', 'text-thrshld-primary');
+        btn.classList.add('text-thrshld-gray-medium');
+    });
+    document.getElementById(`progress-tab-${tabName}`).classList.add('bg-thrshld-accent', 'text-thrshld-primary');
+    document.getElementById(`progress-tab-${tabName}`).classList.remove('text-thrshld-gray-medium');
+    
+    // Show/hide content
+    document.querySelectorAll('.progress-tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    document.getElementById(`progress-${tabName}`).classList.remove('hidden');
+    
+    // Load data for specific tab
+    loadProgressTabData(tabName);
+}
+
+function loadProgressData() {
+    // Load overview stats
+    fetch('/api/progress/overview')
+        .then(response => response.json())
+        .then(data => {
+            if (data.stats) {
+                document.getElementById('total-workouts').textContent = data.stats.total_workouts || 0;
+                document.getElementById('current-streak').textContent = data.stats.current_streak || 0;
+                document.getElementById('personal-records').textContent = data.stats.personal_records || 0;
+                document.getElementById('consistency').textContent = Math.round(data.workout_consistency || 0) + '%';
+            }
+        })
+        .catch(error => console.error('Error loading progress data:', error));
+}
+
+function loadProgressTabData(tabName) {
+    switch(tabName) {
+        case 'overview':
+            loadOverviewData();
+            break;
+        case 'strength':
+            loadStrengthData();
+            break;
+        case 'body':
+            loadBodyMetricsData();
+            break;
+        case 'wellness':
+            loadWellnessData();
+            break;
+    }
+}
+
+function loadOverviewData() {
+    fetch('/api/progress/overview')
+        .then(response => response.json())
+        .then(data => {
+            if (data.weekly_workout_data) {
+                createWeeklyChart(data.weekly_workout_data);
+            }
+            if (data.recent_workouts) {
+                populateRecentWorkouts(data.recent_workouts);
+            }
+        })
+        .catch(error => console.error('Error loading overview data:', error));
+}
+
+function createWeeklyChart(weeklyData) {
+    const ctx = document.getElementById('weekly-chart');
+    if (!ctx) return;
+    
+    const weeks = Object.keys(weeklyData).sort();
+    const workoutCounts = weeks.map(week => weeklyData[week]);
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: weeks.map(week => `Week ${week.split('-W')[1]}`),
+            datasets: [{
+                label: 'Workouts',
+                data: workoutCounts,
+                backgroundColor: '#3b82f6',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
+function populateRecentWorkouts(workouts) {
+    const container = document.getElementById('recent-workouts-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (workouts.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-thrshld-gray-medium">No recent workouts found</div>';
+        return;
+    }
+    
+    workouts.forEach(workout => {
+        const workoutElement = document.createElement('div');
+        workoutElement.className = 'p-3 bg-gray-800 rounded-lg';
+        workoutElement.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="text-white font-medium">${workout.workout_name}</div>
+                    <div class="text-gray-400 text-sm">${workout.date_completed}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-white">${workout.duration_minutes || '--'} min</div>
+                    <div class="text-gray-400 text-sm">${workout.workout_type || 'Workout'}</div>
+                </div>
+            </div>
+        `;
+        container.appendChild(workoutElement);
+    });
+}
+
+// Add progress data loading to main initialization
+document.addEventListener('DOMContentLoaded', function() {
+    loadProgressData();
 });
 
 // Handle offline/online status
