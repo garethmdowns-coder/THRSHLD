@@ -25,7 +25,20 @@ const successToast = document.getElementById('success-toast');
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('THRSHLD app loaded successfully');
+    
     initializeEventListeners();
+    
+    // Load saved goals if they exist
+    const savedGoals = localStorage.getItem('userGoals');
+    if (savedGoals) {
+        try {
+            const goalsData = JSON.parse(savedGoals);
+            updateGoalsDisplay(goalsData);
+        } catch (e) {
+            console.error('Error loading saved goals:', e);
+        }
+    }
     
     // Check if profile exists to determine app state
     fetch('/get-user-data')
@@ -86,6 +99,18 @@ function initializeEventListeners() {
     const editProfileBtn = document.getElementById('edit-profile-btn');
     if (editProfileBtn) {
         editProfileBtn.addEventListener('click', showEditProfile);
+    }
+    
+    // Edit goals button
+    const editGoalsBtn = document.getElementById('edit-goals-btn');
+    if (editGoalsBtn) {
+        editGoalsBtn.addEventListener('click', showEditGoals);
+    }
+    
+    // Profile photo upload
+    const profilePhoto = document.getElementById('profile-photo');
+    if (profilePhoto) {
+        profilePhoto.addEventListener('change', handleProfilePhotoUpload);
     }
     
     // Auto-resize textareas
@@ -178,6 +203,8 @@ async function handleProfileSubmission(event) {
             // Check if we're editing or creating
             const title = document.querySelector('#profile-setup h1');
             if (title && title.textContent === 'Edit Profile') {
+                // Update profile display with new data
+                updateProfileDisplay(profileData);
                 // Return to profile tab after editing
                 showTab('profile');
                 showSuccess('Profile updated successfully!');
@@ -215,16 +242,65 @@ function handleGoalsSubmission(event) {
         return;
     }
     
-    // Store goals locally for now
+    // Store goals locally and update display
     localStorage.setItem('userGoals', JSON.stringify(goalsData));
+    updateGoalsDisplay(goalsData);
     
-    // Show holding page, then redirect to Today
-    showHoldingPage();
-    setTimeout(() => {
-        showMainApp();
-        showTab('today');
-        showSuccess('Your programme is ready!');
-    }, 3000);
+    // Check if we're editing or creating
+    const title = document.querySelector('#goals-content h1');
+    if (title && title.textContent === 'Update Your Goals') {
+        // Return to profile tab after editing
+        showTab('profile');
+        showSuccess('Goals updated! Your new programme is being prepared.');
+    } else {
+        // Show holding page, then redirect to Today
+        showHoldingPage();
+        setTimeout(() => {
+            showMainApp();
+            showTab('today');
+            showSuccess('Your programme is ready!');
+        }, 3000);
+    }
+}
+
+function updateGoalsDisplay(goalsData) {
+    const goalsDisplay = document.getElementById('current-goals-display');
+    if (goalsDisplay) {
+        goalsDisplay.innerHTML = '';
+        
+        // Add primary goal
+        if (goalsData.workout_goal) {
+            const goalText = goalsData.workout_goal.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const goalSpan = document.createElement('span');
+            goalSpan.className = 'px-3 py-1 bg-thrshld-accent text-white text-sm rounded-full';
+            goalSpan.textContent = goalText;
+            goalsDisplay.appendChild(goalSpan);
+        }
+        
+        // Add compound lifts
+        goalsData.compound_lifts.forEach(lift => {
+            const liftText = lift.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const liftSpan = document.createElement('span');
+            liftSpan.className = 'px-3 py-1 bg-thrshld-gray-dark text-thrshld-primary text-sm rounded-full';
+            liftSpan.textContent = liftText;
+            goalsDisplay.appendChild(liftSpan);
+        });
+        
+        // Add training preferences
+        if (goalsData.include_running) {
+            const runningSpan = document.createElement('span');
+            runningSpan.className = 'px-3 py-1 bg-thrshld-gray-dark text-thrshld-primary text-sm rounded-full';
+            runningSpan.textContent = 'Running';
+            goalsDisplay.appendChild(runningSpan);
+        }
+        
+        if (goalsData.include_conditioning) {
+            const conditioningSpan = document.createElement('span');
+            conditioningSpan.className = 'px-3 py-1 bg-thrshld-gray-dark text-thrshld-primary text-sm rounded-full';
+            conditioningSpan.textContent = 'Conditioning';
+            goalsDisplay.appendChild(conditioningSpan);
+        }
+    }
 }
 
 function showGoalsPage() {
@@ -299,11 +375,14 @@ function populateProfileForm() {
     const profileName = document.getElementById('profile-name');
     const profileAge = document.getElementById('profile-age');
     const profileGender = document.getElementById('profile-gender');
+    const profileDetails = document.getElementById('profile-details');
     
     // Populate form fields
     const nameInput = document.getElementById('name-input');
     const ageInput = document.getElementById('age-input');
     const genderInput = document.getElementById('gender-input');
+    const experienceInput = document.getElementById('experience-input');
+    const trainingDaysInput = document.getElementById('training-days-input');
     
     if (profileName && nameInput) {
         nameInput.value = profileName.textContent.trim();
@@ -315,6 +394,82 @@ function populateProfileForm() {
     if (profileGender && genderInput) {
         const gender = profileGender.textContent.trim().toLowerCase();
         if (gender !== '--') genderInput.value = gender;
+    }
+    
+    // Parse experience and training days from profile details
+    if (profileDetails && experienceInput && trainingDaysInput) {
+        const details = profileDetails.textContent.trim();
+        const parts = details.split(' • ');
+        if (parts.length >= 2) {
+            const experience = parts[0].toLowerCase();
+            const trainingDays = parts[1].replace(' days/week', '');
+            
+            experienceInput.value = experience;
+            if (trainingDays !== '0') trainingDaysInput.value = trainingDays;
+        }
+    }
+}
+
+function updateProfileDisplay(profileData) {
+    // Update profile display elements
+    const profileName = document.getElementById('profile-name');
+    const profileAge = document.getElementById('profile-age');
+    const profileGender = document.getElementById('profile-gender');
+    const profileDetails = document.getElementById('profile-details');
+    
+    if (profileName) profileName.textContent = profileData.name || 'User';
+    if (profileAge) profileAge.textContent = profileData.age || '--';
+    if (profileGender) profileGender.textContent = profileData.gender ? profileData.gender.charAt(0).toUpperCase() + profileData.gender.slice(1) : '--';
+    if (profileDetails) {
+        const experience = profileData.experience ? profileData.experience.charAt(0).toUpperCase() + profileData.experience.slice(1) : 'New User';
+        const trainingDays = profileData.training_days || '0';
+        profileDetails.textContent = `${experience} • ${trainingDays} days/week`;
+    }
+}
+
+function showEditGoals() {
+    // Show confirmation dialog
+    if (confirm('Consistency is key to progress and this will start a brand new programme - are you sure you want to proceed?')) {
+        hideAllPages();
+        const goalsContent = document.getElementById('goals-content');
+        if (goalsContent) {
+            goalsContent.style.display = 'block';
+            
+            // Hide app navigation for full-screen editing
+            const navigation = document.getElementById('app-navigation');
+            const header = document.getElementById('app-header');
+            if (navigation) navigation.style.display = 'none';
+            if (header) header.style.display = 'none';
+            
+            // Update form title for editing
+            const title = goalsContent.querySelector('h1');
+            if (title) title.textContent = 'Update Your Goals';
+            
+            // Update button text
+            const submitBtn = goalsContent.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.textContent = 'Update Programme';
+        }
+    }
+}
+
+function handleProfilePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Update the profile photo display
+            const photoBtn = document.querySelector('#profile-photo').parentNode.querySelector('button');
+            if (photoBtn) {
+                photoBtn.innerHTML = `<img src="${e.target.result}" alt="Profile" class="w-full h-full object-cover rounded-full">`;
+            }
+            
+            // Also update profile tab photo if it exists
+            const profileTabPhoto = document.querySelector('#profile-content .w-24.h-24');
+            if (profileTabPhoto) {
+                profileTabPhoto.innerHTML = `<img src="${e.target.result}" alt="Profile" class="w-full h-full object-cover rounded-full">`;
+            }
+        };
+        reader.readAsDataURL(file);
     }
 }
 

@@ -36,11 +36,11 @@
   "profile": {
     "name": "Gareth",
     "gender": "male",
-    "weight": "82",
-    "height": "178",
-    "date_of_birth": "1992-11-24",
+    "weight": "",
+    "height": "",
+    "date_of_birth": "",
     "experience": "advanced",
-    "primary_activity": "weightlifting",
-    "training_location": "gym"
+    "primary_activity": "",
+    "training_location": ""
   }
 }
