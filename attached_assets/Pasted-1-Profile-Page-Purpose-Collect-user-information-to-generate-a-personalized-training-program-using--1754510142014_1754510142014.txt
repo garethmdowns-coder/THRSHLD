@@ -1,0 +1,90 @@
+1. Profile Page
+Purpose:
+Collect user information to generate a personalized training program using the OpenAI API.
+Features:
+
+Uploadable profile photo (use local file input or placeholder avatar)
+Input fields for: Name, Age, Gender, Training Experience, Training Days Per Week
+"Create Profile" button
+On submit, store all input data in a JavaScript object to be sent later via OpenAI API
+Redirect to the Goals page
+2. Goals Page
+Purpose:
+Allow users to select goals and preferences in a simple, option-based format.
+Features:
+
+Title: "Your Goals"
+Question: “What’s your workout goal?”
+Predefined options like:
+Build Muscle
+Lose Fat
+Improve Athleticism
+Train for an Event
+Compound Lift Goals:
+Multi-select checkboxes: Squat, Bench Press, Deadlift, Overhead Press, Pull-Up
+Toggles (on/off switches) for:
+Include Running
+Include Conditioning Workouts
+Button: “Get My Programme”
+On click, simulate API call to OpenAI with stored profile + goal data
+Redirect to a Holding Page
+3. Holding Page
+Purpose:
+Simulate programme generation process.
+Content:
+
+Large title: THRSHLD
+Subtext: INSIGHT. OVERCOME.
+Show a loading spinner or short delay before routing to the Today page
+4. Today Page
+Purpose:
+Show user their daily workout and recovery overview.
+Features:
+
+Recovery Metrics section (static or placeholder values):
+Sleep duration
+HRV
+Resting Heart Rate
+Recovery Score
+Today’s Workout widget:
+Workout title (e.g., “Upper Body Strength”)
+Brief summary (e.g., Bench Press, Pull-Ups, Conditioning)
+Button: “Log Workout” → Opens Workout Diary page
+5. Workout Diary Page
+Purpose:
+Allow users to log their session.
+Features:
+
+Scrollable list of all exercises in today’s workout
+For lifts: fields to log weight and reps per set
+For conditioning or runs: tick box to mark complete
+Button: “Complete Workout”
+Saves entries (locally for now)
+Redirects back to the Today page, which now shows the workout as “Completed”
+6. Progress Page
+Purpose:
+Display user’s strength and endurance progress over time.
+Features:
+
+List of key compound lifts:
+Current heaviest Squat, Bench Press, Deadlift, etc.
+Running milestones (if available):
+Fastest 5K, 10K, Half Marathon, Marathon
+(Use placeholder values for now; future integration with Strava/Garmin)
+7. Navigation / Tabs
+Implement a simple tab bar at the bottom of the screen with:
+Today
+Progress
+Profile
+(Note: Recovery and Library tabs have been removed.)
+8. Profile Tab (View/Edit)
+Purpose:
+Allow user to view and update their profile.
+Features:
+
+Show profile photo and all editable fields (name, age, training days, goals, etc.)
+Editable form fields to update info
+Save button to overwrite stored profile data
+Notes:
+All user data can be stored in memory (e.g., with localStorage or JavaScript variables)
+Style with Tailwind CSS using a clean, minimal, mobile-first aesthetic

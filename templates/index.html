@@ -16,6 +16,19 @@
             </div>
             
             <form id="profile-form" class="space-y-5">
+                <!-- Profile Photo -->
+                <div class="text-center mb-6">
+                    <div class="w-24 h-24 bg-thrshld-gray-dark rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                        <input type="file" id="profile-photo" accept="image/*" class="hidden">
+                        <button type="button" onclick="document.getElementById('profile-photo').click()" class="absolute inset-0 rounded-full bg-thrshld-gray-dark hover:bg-gray-600 transition-colors flex items-center justify-center">
+                            <svg class="w-8 h-8 text-thrshld-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-sm text-thrshld-gray-medium">Upload profile photo</p>
+                </div>
+
                 <!-- Name -->
                 <div>
                     <label for="name-input" class="block text-sm font-medium text-thrshld-primary mb-2">Name</label>
@@ -24,44 +37,29 @@
                            class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
                 </div>
 
-                <!-- Gender -->
-                <div>
-                    <label for="gender-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gender</label>
-                    <select id="gender-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                        <option value="">Select gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                        <option value="prefer_not_to_say">Prefer not to say</option>
-                    </select>
-                </div>
-
-                <!-- Weight & Height -->
+                <!-- Age & Gender -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="weight-input" class="block text-sm font-medium text-thrshld-primary mb-2">Weight</label>
-                        <input type="text" id="weight-input" 
-                               placeholder="e.g., 70kg"
+                        <label for="age-input" class="block text-sm font-medium text-thrshld-primary mb-2">Age</label>
+                        <input type="number" id="age-input" 
+                               placeholder="25"
+                               min="13" max="100"
                                class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
                     </div>
                     <div>
-                        <label for="height-input" class="block text-sm font-medium text-thrshld-primary mb-2">Height</label>
-                        <input type="text" id="height-input" 
-                               placeholder="e.g., 175cm"
-                               class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <label for="gender-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gender</label>
+                        <select id="gender-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Date of Birth -->
+                <!-- Training Experience -->
                 <div>
-                    <label for="dob-input" class="block text-sm font-medium text-thrshld-primary mb-2">Date of Birth</label>
-                    <input type="date" id="dob-input" 
-                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                </div>
-
-                <!-- Experience Level -->
-                <div>
-                    <label for="experience-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gym Experience</label>
+                    <label for="experience-input" class="block text-sm font-medium text-thrshld-primary mb-2">Training Experience</label>
                     <select id="experience-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
                         <option value="">Select experience level</option>
                         <option value="beginner">Beginner (0-6 months)</option>
@@ -71,112 +69,155 @@
                     </select>
                 </div>
 
-                <!-- Primary Activity -->
+                <!-- Training Days Per Week -->
                 <div>
-                    <label for="activity-input" class="block text-sm font-medium text-thrshld-primary mb-2">Primary Activity</label>
-                    <select id="activity-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                        <option value="">Select primary activity</option>
-                        <option value="weightlifting">Weightlifting</option>
-                        <option value="running">Running</option>
-                        <option value="conditioning">Conditioning/CrossFit</option>
-                        <option value="bodybuilding">Bodybuilding</option>
-                        <option value="powerlifting">Powerlifting</option>
-                        <option value="general_fitness">General Fitness</option>
-                    </select>
-                </div>
-
-                <!-- Training Location -->
-                <div>
-                    <label for="location-input" class="block text-sm font-medium text-thrshld-primary mb-2">Where do you train?</label>
-                    <select id="location-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                        <option value="">Select training location</option>
-                        <option value="gym">Commercial Gym</option>
-                        <option value="home">Home Gym</option>
-                        <option value="outdoor">Outdoor</option>
-                        <option value="mixed">Mixed (Gym + Home)</option>
+                    <label for="training-days-input" class="block text-sm font-medium text-thrshld-primary mb-2">Training Days Per Week</label>
+                    <select id="training-days-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select days per week</option>
+                        <option value="2">2 days</option>
+                        <option value="3">3 days</option>
+                        <option value="4">4 days</option>
+                        <option value="5">5 days</option>
+                        <option value="6">6 days</option>
+                        <option value="7">7 days</option>
                     </select>
                 </div>
 
                 <button type="submit" class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-600 transition-colors mt-6">
-                    Create My Profile
+                    Create Profile
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- Goals Page -->
+    <div id="goals-content" class="min-h-screen flex flex-col justify-center px-6" style="display: none;">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-800 p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-thrshld-primary mb-3">Your Goals</h1>
+                <p class="text-thrshld-gray-medium">What's your workout goal?</p>
+            </div>
+            
+            <form id="goals-form" class="space-y-6">
+                <!-- Workout Goals -->
+                <div>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="flex items-center p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl cursor-pointer hover:border-thrshld-accent transition-colors">
+                            <input type="radio" name="workout-goal" value="build-muscle" class="mr-3">
+                            <span class="text-thrshld-primary">Build Muscle</span>
+                        </label>
+                        <label class="flex items-center p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl cursor-pointer hover:border-thrshld-accent transition-colors">
+                            <input type="radio" name="workout-goal" value="lose-fat" class="mr-3">
+                            <span class="text-thrshld-primary">Lose Fat</span>
+                        </label>
+                        <label class="flex items-center p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl cursor-pointer hover:border-thrshld-accent transition-colors">
+                            <input type="radio" name="workout-goal" value="improve-athleticism" class="mr-3">
+                            <span class="text-thrshld-primary">Improve Athleticism</span>
+                        </label>
+                        <label class="flex items-center p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl cursor-pointer hover:border-thrshld-accent transition-colors">
+                            <input type="radio" name="workout-goal" value="train-for-event" class="mr-3">
+                            <span class="text-thrshld-primary">Train for an Event</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Compound Lift Goals -->
+                <div>
+                    <h3 class="text-lg font-medium text-thrshld-primary mb-4">Compound Lift Goals</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center p-3 bg-thrshld-bg-primary border border-gray-700 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="compound-lifts" value="squat" class="mr-2">
+                            <span class="text-thrshld-primary text-sm">Squat</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-thrshld-bg-primary border border-gray-700 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="compound-lifts" value="bench-press" class="mr-2">
+                            <span class="text-thrshld-primary text-sm">Bench Press</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-thrshld-bg-primary border border-gray-700 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="compound-lifts" value="deadlift" class="mr-2">
+                            <span class="text-thrshld-primary text-sm">Deadlift</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-thrshld-bg-primary border border-gray-700 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="compound-lifts" value="overhead-press" class="mr-2">
+                            <span class="text-thrshld-primary text-sm">Overhead Press</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-thrshld-bg-primary border border-gray-700 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="compound-lifts" value="pull-up" class="mr-2">
+                            <span class="text-thrshld-primary text-sm">Pull-Up</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Training Preferences -->
+                <div>
+                    <h3 class="text-lg font-medium text-thrshld-primary mb-4">Training Preferences</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center justify-between p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl">
+                            <span class="text-thrshld-primary">Include Running</span>
+                            <input type="checkbox" name="include-running" class="toggle-switch">
+                        </label>
+                        <label class="flex items-center justify-between p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl">
+                            <span class="text-thrshld-primary">Include Conditioning Workouts</span>
+                            <input type="checkbox" name="include-conditioning" class="toggle-switch">
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-600 transition-colors mt-8">
+                    Get My Programme
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Holding Page -->
+    <div id="holding-content" class="min-h-screen flex flex-col justify-center items-center px-6" style="display: none;">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold text-thrshld-primary mb-4">THRSHLD</h1>
+            <p class="text-xl text-thrshld-gray-medium mb-8">INSIGHT. OVERCOME.</p>
+            <div class="w-12 h-12 border-4 border-thrshld-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+        </div>
+    </div>
+
     <!-- Today Tab -->
     <div id="today-content" class="tab-content" style="display: none;">
-        <!-- Goal Setting Card -->
-        <div id="goal-setup" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.profile and user_data.profile.name and not user_data.goal %}block{% else %}none{% endif %}">
-            <div class="text-center mb-4">
-                <div class="w-16 h-16 bg-thrshld-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
+        <!-- Recovery Metrics -->
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recovery Metrics</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-2xl font-bold text-thrshld-primary">7.2h</div>
+                    <div class="text-sm text-thrshld-gray-medium">Sleep</div>
                 </div>
-                <h2 class="text-xl font-bold text-thrshld-primary mb-2">Hi {% if user_data.profile and user_data.profile.name %}{{ user_data.profile.name }}{% else %}there{% endif %}!</h2>
-                <p class="text-thrshld-gray-medium text-sm">Now let's set your fitness goal</p>
-            </div>
-            
-            <form id="goal-form" class="space-y-4">
-                <div>
-                    <label for="goal-input" class="block text-sm font-medium text-thrshld-primary mb-2">Your Fitness Goal</label>
-                    <textarea id="goal-input" 
-                              placeholder="e.g., Build strength, lose weight, improve endurance, train for a marathon..."
-                              class="w-full p-4 bg-thrshld-bg-primary border border-gray-600 rounded-xl resize-none text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
-                              rows="3"></textarea>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-2xl font-bold text-thrshld-primary">82</div>
+                    <div class="text-sm text-thrshld-gray-medium">HRV</div>
                 </div>
-                <button type="submit" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
-                    Set My Goal
-                </button>
-            </form>
-        </div>
-
-        <!-- Current Goal Display -->
-        <div id="goal-display" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex-1">
-                    <h3 class="text-sm font-medium text-thrshld-gray-medium uppercase tracking-wide mb-2">Your Goal</h3>
-                    <p id="current-goal" class="text-thrshld-primary font-medium">{{ user_data.goal }}</p>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-2xl font-bold text-thrshld-primary">58</div>
+                    <div class="text-sm text-thrshld-gray-medium">RHR</div>
                 </div>
-                <button onclick="editGoal()" class="p-2 text-thrshld-gray-medium hover:text-thrshld-primary">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                </button>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-2xl font-bold text-green-400">Good</div>
+                    <div class="text-sm text-thrshld-gray-medium">Recovery</div>
+                </div>
             </div>
         </div>
 
-        <!-- Check-in Card -->
-        <div id="checkin-card" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
-            <h3 class="text-lg font-bold text-thrshld-primary mb-4">How are you feeling today?</h3>
-            
-            <form id="checkin-form" class="space-y-4">
-                <div>
-                    <textarea id="status-input" 
-                              placeholder="Share how you're feeling, your energy level, any soreness, or what you want to focus on today..."
-                              class="w-full p-4 bg-thrshld-bg-primary border border-gray-600 rounded-xl resize-none text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
-                              rows="3"></textarea>
-                </div>
-                <button type="submit" id="checkin-btn" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
-                    Get My Workout
-                </button>
-            </form>
-        </div>
-
-        <!-- Today's Workout -->
-        <div id="workout-card" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: none;">
+        <!-- Today's Workout Widget -->
+        <div id="todays-workout" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-thrshld-primary">Today's Workout</h3>
-                <span class="text-sm text-thrshld-gray-medium bg-thrshld-gray-dark px-3 py-1 rounded-full">AI Generated</span>
+                <div id="workout-status" class="text-sm text-thrshld-gray-medium bg-thrshld-gray-dark px-3 py-1 rounded-full">Ready</div>
             </div>
             
-            <div id="workout-content" class="prose prose-sm max-w-none text-thrshld-primary mb-6">
-                <!-- Workout content will be inserted here -->
+            <div id="workout-preview" class="mb-4">
+                <h4 id="workout-title" class="font-semibold text-thrshld-primary mb-2">Upper Body Strength</h4>
+                <p id="workout-summary" class="text-thrshld-gray-medium text-sm">Bench Press, Pull-Ups, Conditioning</p>
             </div>
             
-            <button id="start-workout-btn" class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-medium text-lg hover:bg-blue-600 transition-colors">
-                Start Workout
+            <button id="log-workout-btn" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
+                Log Workout
             </button>
         </div>
 
@@ -200,47 +241,165 @@
         </div>
     </div>
 
+    <!-- Workout Diary Page -->
+    <div id="workout-diary-content" class="min-h-screen p-6" style="display: none;">
+        <div class="flex items-center justify-between mb-6">
+            <button onclick="showTab('today')" class="p-2 text-thrshld-gray-medium hover:text-thrshld-primary">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h1 class="text-2xl font-bold text-thrshld-primary">Workout Log</h1>
+            <div></div>
+        </div>
+        
+        <div class="bg-thrshld-bg-secondary rounded-2xl border border-gray-700 p-6">
+            <h2 class="text-xl font-bold text-thrshld-primary mb-6">Upper Body Strength</h2>
+            
+            <div id="exercise-log" class="space-y-6">
+                <!-- Exercise entries will be dynamically added here -->
+                <div class="exercise-entry">
+                    <h3 class="font-semibold text-thrshld-primary mb-3">Bench Press</h3>
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="number" placeholder="Weight" class="p-2 bg-thrshld-bg-primary border border-gray-700 rounded text-thrshld-primary text-sm">
+                            <input type="number" placeholder="Reps" class="p-2 bg-thrshld-bg-primary border border-gray-700 rounded text-thrshld-primary text-sm">
+                            <button class="bg-thrshld-accent text-white rounded text-sm">Add Set</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="exercise-entry">
+                    <h3 class="font-semibold text-thrshld-primary mb-3">Pull-Ups</h3>
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="number" placeholder="Weight" class="p-2 bg-thrshld-bg-primary border border-gray-700 rounded text-thrshld-primary text-sm">
+                            <input type="number" placeholder="Reps" class="p-2 bg-thrshld-bg-primary border border-gray-700 rounded text-thrshld-primary text-sm">
+                            <button class="bg-thrshld-accent text-white rounded text-sm">Add Set</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="exercise-entry">
+                    <label class="flex items-center p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl">
+                        <input type="checkbox" class="mr-3">
+                        <span class="text-thrshld-primary">10-minute conditioning circuit</span>
+                    </label>
+                </div>
+            </div>
+            
+            <button id="complete-workout-btn" class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-600 transition-colors mt-8">
+                Complete Workout
+            </button>
+        </div>
+    </div>
+
     <!-- Progress Tab -->
     <div id="progress-content" class="tab-content hidden">
         <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Your Progress</h2>
         
-        <!-- Workout History -->
+        <!-- Compound Lifts -->
         <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
-            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recent Sessions</h3>
-            <div id="workout-history" class="space-y-4">
-                {% if user_data.history %}
-                    {% for session in user_data.history[-5:] %}
-                    <div class="border-l-4 border-thrshld-primary pl-4 py-2">
-                        <div class="font-medium text-thrshld-primary text-sm">{{ session.check_in }}</div>
-                        <div class="text-xs text-thrshld-gray-medium mt-1">AI workout generated</div>
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Compound Lifts</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div>
+                        <div class="font-medium text-thrshld-primary">Squat</div>
+                        <div class="text-sm text-thrshld-gray-medium">Personal Record</div>
                     </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="text-center py-8">
-                        <div class="text-thrshld-gray-medium mb-2">
-                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                        </div>
-                        <p class="text-thrshld-gray-medium">No workout sessions yet</p>
-                        <p class="text-xs text-thrshld-gray-medium">Complete your first check-in to get started</p>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-thrshld-primary">225 lbs</div>
+                        <div class="text-xs text-thrshld-gray-medium">3 reps</div>
                     </div>
-                {% endif %}
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div>
+                        <div class="font-medium text-thrshld-primary">Bench Press</div>
+                        <div class="text-sm text-thrshld-gray-medium">Personal Record</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-thrshld-primary">185 lbs</div>
+                        <div class="text-xs text-thrshld-gray-medium">5 reps</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div>
+                        <div class="font-medium text-thrshld-primary">Deadlift</div>
+                        <div class="text-sm text-thrshld-gray-medium">Personal Record</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-thrshld-primary">275 lbs</div>
+                        <div class="text-xs text-thrshld-gray-medium">1 rep</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Statistics Overview -->
+        <!-- Running Milestones -->
         <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
-            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Overview</h3>
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Running Milestones</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div class="text-center p-4 bg-thrshld-gray-dark rounded-xl">
-                    <div class="text-3xl font-bold text-thrshld-primary">{{ user_data.stats.completed_workouts or 0 }}</div>
-                    <div class="text-sm text-thrshld-gray-medium">Total Workouts</div>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-lg font-bold text-thrshld-primary">22:45</div>
+                    <div class="text-sm text-thrshld-gray-medium">Fastest 5K</div>
                 </div>
-                <div class="text-center p-4 bg-thrshld-gray-dark rounded-xl">
-                    <div class="text-3xl font-bold text-thrshld-primary">{{ user_data.stats.current_streak or 0 }}</div>
-                    <div class="text-sm text-thrshld-gray-medium">Current Streak</div>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-lg font-bold text-thrshld-primary">47:20</div>
+                    <div class="text-sm text-thrshld-gray-medium">Fastest 10K</div>
                 </div>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-lg font-bold text-thrshld-primary">1:42:15</div>
+                    <div class="text-sm text-thrshld-gray-medium">Half Marathon</div>
+                </div>
+                <div class="text-center p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-lg font-bold text-thrshld-gray-medium">--:--</div>
+                    <div class="text-sm text-thrshld-gray-medium">Marathon</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="profile-content" class="tab-content hidden">
+        <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Profile</h2>
+        
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-thrshld-gray-dark rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-thrshld-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-thrshld-primary">John Doe</h3>
+                <p class="text-thrshld-gray-medium">Intermediate • 4 days/week</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div class="text-sm text-thrshld-gray-medium">Age</div>
+                        <div class="font-semibold text-thrshld-primary">28</div>
+                    </div>
+                    <div class="p-4 bg-thrshld-bg-primary rounded-xl">
+                        <div class="text-sm text-thrshld-gray-medium">Gender</div>
+                        <div class="font-semibold text-thrshld-primary">Male</div>
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-thrshld-bg-primary rounded-xl">
+                    <div class="text-sm text-thrshld-gray-medium mb-2">Current Goals</div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-thrshld-accent text-white text-sm rounded-full">Build Muscle</span>
+                        <span class="px-3 py-1 bg-thrshld-gray-dark text-thrshld-primary text-sm rounded-full">Squat</span>
+                        <span class="px-3 py-1 bg-thrshld-gray-dark text-thrshld-primary text-sm rounded-full">Bench Press</span>
+                    </div>
+                </div>
+                
+                <button class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
+                    Edit Profile
+                </button>
             </div>
         </div>
     </div>

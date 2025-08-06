@@ -58,19 +58,22 @@ function initializeEventListeners() {
         profileForm.addEventListener('submit', handleProfileSubmission);
     }
     
-    // Goal form submission
-    if (goalForm) {
-        goalForm.addEventListener('submit', handleGoalSubmission);
+    // Goals form submission
+    const goalsForm = document.getElementById('goals-form');
+    if (goalsForm) {
+        goalsForm.addEventListener('submit', handleGoalsSubmission);
     }
     
-    // Check-in form submission
-    if (checkinForm) {
-        checkinForm.addEventListener('submit', handleCheckinSubmission);
+    // Log workout button
+    const logWorkoutBtn = document.getElementById('log-workout-btn');
+    if (logWorkoutBtn) {
+        logWorkoutBtn.addEventListener('click', showWorkoutDiary);
     }
     
-    // Start workout button
-    if (startWorkoutBtn) {
-        startWorkoutBtn.addEventListener('click', handleStartWorkout);
+    // Complete workout button
+    const completeWorkoutBtn = document.getElementById('complete-workout-btn');
+    if (completeWorkoutBtn) {
+        completeWorkoutBtn.addEventListener('click', handleCompleteWorkout);
     }
     
     // Auto-resize textareas
@@ -82,12 +85,25 @@ function initializeEventListeners() {
     });
 }
 
+function handleCompleteWorkout() {
+    // Update workout status
+    const workoutStatus = document.getElementById('workout-status');
+    if (workoutStatus) workoutStatus.textContent = 'Completed';
+    
+    // Return to Today tab
+    showTab('today');
+    showSuccess('Workout completed successfully!');
+}
+
+
+
 // Tab Management
 function showTab(tabName) {
-    // Hide all tab content
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
-    });
+    // Make sure app UI is visible
+    showMainApp();
+    
+    // Hide all tab contents
+    hideAllPages();
     
     // Remove active class from all nav tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -97,13 +113,13 @@ function showTab(tabName) {
     });
     
     // Show selected tab content
-    const selectedContent = document.getElementById(tabName + '-content');
+    const selectedContent = document.getElementById(`${tabName}-content`);
     if (selectedContent) {
-        selectedContent.classList.remove('hidden');
+        selectedContent.style.display = 'block';
     }
     
-    // Activate selected nav tab
-    const selectedTab = document.getElementById('tab-' + tabName);
+    // Activate selected tab
+    const selectedTab = document.getElementById(`tab-${tabName}`);
     if (selectedTab) {
         selectedTab.classList.add('active');
         selectedTab.classList.remove('text-thrshld-gray-medium');
@@ -119,13 +135,10 @@ async function handleProfileSubmission(event) {
     
     const profileData = {
         name: document.getElementById('name-input').value.trim(),
+        age: document.getElementById('age-input').value,
         gender: document.getElementById('gender-input').value,
-        weight: document.getElementById('weight-input').value.trim(),
-        height: document.getElementById('height-input').value.trim(),
-        date_of_birth: document.getElementById('dob-input').value,
         experience: document.getElementById('experience-input').value,
-        primary_activity: document.getElementById('activity-input').value,
-        training_location: document.getElementById('location-input').value
+        training_days: document.getElementById('training-days-input').value
     };
     
     // Basic validation
@@ -150,7 +163,7 @@ async function handleProfileSubmission(event) {
         const data = await response.json();
         
         if (response.ok) {
-            showProfileComplete();
+            showGoalsPage();
             showSuccess('Profile created successfully!');
         } else {
             showError(data.error || 'Failed to create profile');
@@ -163,10 +176,67 @@ async function handleProfileSubmission(event) {
     }
 }
 
-function showProfileComplete() {
+// Goals Management
+function handleGoalsSubmission(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const goalsData = {
+        workout_goal: formData.get('workout-goal'),
+        compound_lifts: formData.getAll('compound-lifts'),
+        include_running: formData.get('include-running') === 'on',
+        include_conditioning: formData.get('include-conditioning') === 'on'
+    };
+    
+    // Basic validation
+    if (!goalsData.workout_goal) {
+        showError('Please select a workout goal');
+        return;
+    }
+    
+    // Store goals locally for now
+    localStorage.setItem('userGoals', JSON.stringify(goalsData));
+    
+    // Show holding page, then redirect to Today
+    showHoldingPage();
+    setTimeout(() => {
+        showMainApp();
+        showTab('today');
+        showSuccess('Your programme is ready!');
+    }, 3000);
+}
+
+function showGoalsPage() {
     if (profileSetup) profileSetup.style.display = 'none';
-    showMainApp();
-    if (goalSetup) goalSetup.style.display = 'block';
+    const goalsContent = document.getElementById('goals-content');
+    if (goalsContent) goalsContent.style.display = 'block';
+}
+
+function showHoldingPage() {
+    const goalsContent = document.getElementById('goals-content');
+    const holdingContent = document.getElementById('holding-content');
+    if (goalsContent) goalsContent.style.display = 'none';
+    if (holdingContent) holdingContent.style.display = 'block';
+}
+
+function showWorkoutDiary() {
+    hideAllPages();
+    const workoutDiary = document.getElementById('workout-diary-content');
+    if (workoutDiary) workoutDiary.style.display = 'block';
+    
+    // Hide app navigation for full-screen experience
+    const navigation = document.getElementById('app-navigation');
+    const header = document.getElementById('app-header');
+    if (navigation) navigation.style.display = 'none';
+    if (header) header.style.display = 'none';
+}
+
+function hideAllPages() {
+    const pages = ['profile-setup', 'goals-content', 'holding-content', 'today-content', 'progress-content', 'profile-content', 'workout-diary-content'];
+    pages.forEach(pageId => {
+        const page = document.getElementById(pageId);
+        if (page) page.style.display = 'none';
+    });
 }
 
 function showMainApp() {
