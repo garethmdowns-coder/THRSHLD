@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals Setup - THRSHLD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#1a1a1a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #000000; 
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+        }
+        .text-primary { color: #ff6b35; }
+        .bg-primary { background-color: #ff6b35; }
+        .border-primary { border-color: #ff6b35; }
+        .bg-secondary { background-color: #1a1a1a; }
+        .bg-card { background-color: #111111; }
+        input, select, textarea {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #ff6b35;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">Set Your Goals</h1>
+            <p class="text-gray-400">Define your fitness objectives to get personalized workouts</p>
+        </div>
+
+        <!-- Goals Form -->
+        <form id="goalsForm" class="space-y-6">
+            <!-- Primary Goal -->
+            <div>
+                <label class="block text-sm font-medium mb-2">What's your primary fitness goal?</label>
+                <select name="workout_goal" required class="w-full p-3 rounded-lg">
+                    <option value="">Select your goal</option>
+                    <option value="strength_building">Build Strength</option>
+                    <option value="muscle_growth">Build Muscle</option>
+                    <option value="fat_loss">Lose Fat</option>
+                    <option value="general_fitness">General Fitness</option>
+                    <option value="athletic_performance">Athletic Performance</option>
+                    <option value="endurance">Improve Endurance</option>
+                </select>
+            </div>
+
+            <!-- Target Sessions Per Week -->
+            <div>
+                <label class="block text-sm font-medium mb-2">How many sessions per week?</label>
+                <select name="target_sessions_per_week" required class="w-full p-3 rounded-lg">
+                    <option value="">Select frequency</option>
+                    <option value="2">2 sessions/week</option>
+                    <option value="3">3 sessions/week</option>
+                    <option value="4">4 sessions/week</option>
+                    <option value="5">5 sessions/week</option>
+                    <option value="6">6 sessions/week</option>
+                </select>
+            </div>
+
+            <!-- Compound Lifts Focus -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Which compound lifts do you want to focus on?</label>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="compound_lifts" value="squat" class="mr-2">
+                        <span>Squat</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="compound_lifts" value="bench_press" class="mr-2">
+                        <span>Bench Press</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="compound_lifts" value="deadlift" class="mr-2">
+                        <span>Deadlift</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="compound_lifts" value="overhead_press" class="mr-2">
+                        <span>Overhead Press</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="compound_lifts" value="pull_ups" class="mr-2">
+                        <span>Pull-ups</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Include Running -->
+            <div>
+                <label class="flex items-center">
+                    <input type="checkbox" name="include_running" class="mr-2">
+                    <span>Include running/cardio sessions</span>
+                </label>
+            </div>
+
+            <!-- Include Conditioning -->
+            <div>
+                <label class="flex items-center">
+                    <input type="checkbox" name="include_conditioning" class="mr-2">
+                    <span>Include CrossFit/HYROX style conditioning</span>
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-primary hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                Save Goals
+            </button>
+        </form>
+
+        <!-- Skip/Back Button -->
+        <div class="flex justify-between mt-6">
+            <button onclick="goBack()" class="text-gray-400 hover:text-white">
+                ← Back to Profile
+            </button>
+            <button onclick="skipGoals()" class="text-gray-400 hover:text-white">
+                Skip for now →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('goalsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const goals = {
+                workout_goal: formData.get('workout_goal'),
+                target_sessions_per_week: parseInt(formData.get('target_sessions_per_week')),
+                compound_lifts: formData.getAll('compound_lifts'),
+                include_running: formData.has('include_running'),
+                include_conditioning: formData.has('include_conditioning')
+            };
+
+            try {
+                const response = await fetch('/set-goal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(goals)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Goals saved successfully, redirect to main app
+                    window.location.href = '/';
+                } else {
+                    alert(result.error || 'Failed to save goals');
+                }
+            } catch (error) {
+                console.error('Error saving goals:', error);
+                alert('Failed to save goals. Please try again.');
+            }
+        });
+
+        function goBack() {
+            window.location.href = '/profile-setup';
+        }
+
+        function skipGoals() {
+            // Redirect to main app without saving goals
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

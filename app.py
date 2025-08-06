@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_migrate import Migrate
 from flask_mail import Mail, Message
@@ -200,7 +200,8 @@ def register():
         return render_template("auth.html")
     
     # Create new user
-    user = User(email=email)
+    user = User()
+    user.email = email
     user.set_password(password)
     
     db.session.add(user)
@@ -210,6 +211,11 @@ def register():
     
     # New users go to profile setup
     return redirect("/profile-setup")
+
+@app.route("/goals-setup")
+@login_required  
+def goals_setup():
+    return render_template("goals_setup.html")
 
 @app.route("/logout")
 @login_required
@@ -451,7 +457,8 @@ def set_goal():
         # Get or create user goals
         goals = current_user.goals
         if not goals:
-            goals = UserGoals(user_id=current_user.id)
+            goals = UserGoals()
+            goals.user_id = current_user.id
             db.session.add(goals)
         
         # Update goals
@@ -482,11 +489,10 @@ def check_in():
         status = status.strip()
         
         # Create check-in record
-        checkin = CheckIn(
-            user_id=current_user.id,
-            date=date.today(),
-            notes=status
-        )
+        checkin = CheckIn()
+        checkin.user_id = current_user.id
+        checkin.date = date.today()
+        checkin.notes = status
         db.session.add(checkin)
         
         # Get user goals for workout generation
@@ -571,13 +577,12 @@ Format as a detailed workout card with clear progression and personalization."""
         reply = result.get("choices", [{}])[0].get("message", {}).get("content", "No workout plan generated.")
 
         # Create workout record
-        workout = Workout(
-            user_id=current_user.id,
-            workout_name="Daily Workout",
-            workout_type="generated",
-            date_completed=date.today(),
-            notes=reply
-        )
+        workout = Workout()
+        workout.user_id = current_user.id
+        workout.workout_name = "Daily Workout"
+        workout.workout_type = "generated"
+        workout.date_completed = date.today()
+        workout.notes = reply
         db.session.add(workout)
         db.session.commit()
 
@@ -648,7 +653,8 @@ def set_profile():
         # Get or create user profile
         profile = current_user.profile
         if not profile:
-            profile = UserProfile(user_id=current_user.id)
+            profile = UserProfile()
+            profile.user_id = current_user.id
             db.session.add(profile)
             logging.debug("Created new profile for user")
         

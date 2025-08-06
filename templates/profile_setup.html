@@ -330,8 +330,8 @@
                 console.log('Response data:', data);
 
                 if (data.success) {
-                    // Redirect to main app
-                    window.location.href = '/';
+                    // Redirect to goals setup
+                    window.location.href = '/goals-setup';
                 } else {
                     showError(data.error || 'Failed to save profile');
                 }
