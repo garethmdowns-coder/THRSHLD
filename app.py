@@ -64,7 +64,7 @@ def index():
         profile = current_user.profile
         if not profile or not profile.name:
             # Redirect new users to profile setup
-            return redirect(url_for("profile_setup"))
+            return redirect("/profile-setup")
         
         # Get user data from database for returning users
         goals = current_user.goals
@@ -107,7 +107,7 @@ def login():
             logging.debug(f"Password valid: {password_valid}")
             
             if password_valid:
-                login_user(user)
+                login_user(user, remember=True)
                 logging.debug(f"User logged in successfully: {user.email}")
                 
                 # Check if user needs to complete profile setup
@@ -116,11 +116,11 @@ def login():
                 logging.debug(f"Has profile: {has_profile}, Has name: {has_name}")
                 
                 if not has_profile or not has_name:
-                    logging.debug("Redirecting to profile setup")
-                    return redirect(url_for("profile_setup"))
+                    logging.debug("User needs profile setup, rendering profile_setup.html")
+                    return render_template("profile_setup.html")
                 else:
                     logging.debug("Redirecting to index")
-                    return redirect(url_for("index"))
+                    return redirect("/")
             else:
                 flash("Invalid email or password")
                 return render_template("auth.html")
@@ -161,7 +161,7 @@ def register():
     login_user(user)
     
     # New users go to profile setup
-    return redirect(url_for("profile_setup"))
+    return render_template("profile_setup.html")
 
 @app.route("/logout")
 @login_required
