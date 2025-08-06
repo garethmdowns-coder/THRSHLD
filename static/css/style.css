@@ -7,7 +7,7 @@
 
 /* Active navigation tab */
 .nav-tab.active {
-    color: #000000;
+    color: #ffffff;
 }
 
 .nav-tab.active svg {
@@ -71,9 +71,10 @@
 
 /* Form focus states */
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
 /* Button press effect */
@@ -90,7 +91,7 @@ button:active {
     font-weight: 600;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
-    color: #000000;
+    color: #ffffff;
 }
 
 #workout-content p {
@@ -126,12 +127,12 @@ button:active {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-    .border-gray-200 {
-        border-color: #000000;
+    .border-gray-600 {
+        border-color: #ffffff;
     }
     
     .text-thrshld-gray-medium {
-        color: #333333;
+        color: #d1d5db;
     }
 }
 

@@ -5,6 +5,8 @@ let currentTab = 'today';
 let isLoading = false;
 
 // DOM Elements
+const profileSetup = document.getElementById('profile-setup');
+const profileForm = document.getElementById('profile-form');
 const goalForm = document.getElementById('goal-form');
 const goalInput = document.getElementById('goal-input');
 const goalSetup = document.getElementById('goal-setup');
@@ -34,6 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeEventListeners() {
+    // Profile form submission
+    if (profileForm) {
+        profileForm.addEventListener('submit', handleProfileSubmission);
+    }
+    
     // Goal form submission
     if (goalForm) {
         goalForm.addEventListener('submit', handleGoalSubmission);
@@ -87,6 +94,61 @@ function showTab(tabName) {
     }
     
     currentTab = tabName;
+}
+
+// Profile Management
+async function handleProfileSubmission(event) {
+    event.preventDefault();
+    
+    const profileData = {
+        name: document.getElementById('name-input').value.trim(),
+        gender: document.getElementById('gender-input').value,
+        weight: document.getElementById('weight-input').value.trim(),
+        height: document.getElementById('height-input').value.trim(),
+        date_of_birth: document.getElementById('dob-input').value,
+        experience: document.getElementById('experience-input').value,
+        primary_activity: document.getElementById('activity-input').value,
+        training_location: document.getElementById('location-input').value
+    };
+    
+    // Basic validation
+    if (!profileData.name) {
+        showError('Please enter your name');
+        return;
+    }
+    
+    if (isLoading) return;
+    
+    try {
+        setLoading(true);
+        
+        const response = await fetch('/set-profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(profileData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showProfileComplete();
+            showSuccess('Profile created successfully!');
+        } else {
+            showError(data.error || 'Failed to create profile');
+        }
+    } catch (error) {
+        console.error('Profile submission error:', error);
+        showError('Network error. Please check your connection and try again.');
+    } finally {
+        setLoading(false);
+    }
+}
+
+function showProfileComplete() {
+    if (profileSetup) profileSetup.style.display = 'none';
+    if (goalSetup) goalSetup.style.display = 'block';
 }
 
 // Goal Management

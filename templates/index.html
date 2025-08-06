@@ -2,18 +2,118 @@
 
 {% block content %}
 <div class="py-6">
+    <!-- Profile Setup Card -->
+    <div id="profile-setup" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if not user_data.profile or not user_data.profile.name %}block{% else %}none{% endif %}">
+        <div class="text-center mb-6">
+            <div class="w-20 h-20 bg-thrshld-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-thrshld-primary mb-2">Welcome to THRSHLD</h2>
+            <p class="text-thrshld-gray-medium text-sm">Let's create your profile to get personalized workouts</p>
+        </div>
+        
+        <form id="profile-form" class="space-y-4">
+            <!-- Name -->
+            <div>
+                <label for="name-input" class="block text-sm font-medium text-thrshld-primary mb-2">Name</label>
+                <input type="text" id="name-input" 
+                       placeholder="Enter your name"
+                       class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+            </div>
+
+            <!-- Gender -->
+            <div>
+                <label for="gender-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gender</label>
+                <select id="gender-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+            </div>
+
+            <!-- Weight & Height -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="weight-input" class="block text-sm font-medium text-thrshld-primary mb-2">Weight</label>
+                    <input type="text" id="weight-input" 
+                           placeholder="e.g., 70kg"
+                           class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                </div>
+                <div>
+                    <label for="height-input" class="block text-sm font-medium text-thrshld-primary mb-2">Height</label>
+                    <input type="text" id="height-input" 
+                           placeholder="e.g., 175cm"
+                           class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                </div>
+            </div>
+
+            <!-- Date of Birth -->
+            <div>
+                <label for="dob-input" class="block text-sm font-medium text-thrshld-primary mb-2">Date of Birth</label>
+                <input type="date" id="dob-input" 
+                       class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+            </div>
+
+            <!-- Experience Level -->
+            <div>
+                <label for="experience-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gym Experience</label>
+                <select id="experience-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                    <option value="">Select experience level</option>
+                    <option value="beginner">Beginner (0-6 months)</option>
+                    <option value="novice">Novice (6 months - 2 years)</option>
+                    <option value="intermediate">Intermediate (2-5 years)</option>
+                    <option value="advanced">Advanced (5+ years)</option>
+                </select>
+            </div>
+
+            <!-- Primary Activity -->
+            <div>
+                <label for="activity-input" class="block text-sm font-medium text-thrshld-primary mb-2">Primary Activity</label>
+                <select id="activity-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                    <option value="">Select primary activity</option>
+                    <option value="weightlifting">Weightlifting</option>
+                    <option value="running">Running</option>
+                    <option value="conditioning">Conditioning/CrossFit</option>
+                    <option value="bodybuilding">Bodybuilding</option>
+                    <option value="powerlifting">Powerlifting</option>
+                    <option value="general_fitness">General Fitness</option>
+                </select>
+            </div>
+
+            <!-- Training Location -->
+            <div>
+                <label for="location-input" class="block text-sm font-medium text-thrshld-primary mb-2">Where do you train?</label>
+                <select id="location-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                    <option value="">Select training location</option>
+                    <option value="gym">Commercial Gym</option>
+                    <option value="home">Home Gym</option>
+                    <option value="outdoor">Outdoor</option>
+                    <option value="mixed">Mixed (Gym + Home)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
+                Create My Profile
+            </button>
+        </form>
+    </div>
+
     <!-- Today Tab -->
     <div id="today-content" class="tab-content">
         <!-- Goal Setting Card -->
-        <div id="goal-setup" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: {% if not user_data.goal %}block{% else %}none{% endif %}">
+        <div id="goal-setup" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.profile and user_data.profile.name and not user_data.goal %}block{% else %}none{% endif %}">
             <div class="text-center mb-4">
-                <div class="w-16 h-16 bg-thrshld-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <div class="w-16 h-16 bg-thrshld-accent rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-thrshld-primary mb-2">Welcome to THRSHLD</h2>
-                <p class="text-thrshld-gray-medium text-sm">Let's start by setting your fitness goal</p>
+                <h2 class="text-xl font-bold text-thrshld-primary mb-2">Hi {% if user_data.profile and user_data.profile.name %}{{ user_data.profile.name }}{% else %}there{% endif %}!</h2>
+                <p class="text-thrshld-gray-medium text-sm">Now let's set your fitness goal</p>
             </div>
             
             <form id="goal-form" class="space-y-4">
@@ -21,17 +121,17 @@
                     <label for="goal-input" class="block text-sm font-medium text-thrshld-primary mb-2">Your Fitness Goal</label>
                     <textarea id="goal-input" 
                               placeholder="e.g., Build strength, lose weight, improve endurance, train for a marathon..."
-                              class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-thrshld-primary focus:border-transparent"
+                              class="w-full p-4 bg-thrshld-bg-primary border border-gray-600 rounded-xl resize-none text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
                               rows="3"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-thrshld-primary text-white py-3 px-6 rounded-xl font-medium hover:bg-thrshld-secondary transition-colors">
+                <button type="submit" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
                     Set My Goal
                 </button>
             </form>
         </div>
 
         <!-- Current Goal Display -->
-        <div id="goal-display" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
+        <div id="goal-display" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
             <div class="flex items-start justify-between mb-4">
                 <div class="flex-1">
                     <h3 class="text-sm font-medium text-thrshld-gray-medium uppercase tracking-wide mb-2">Your Goal</h3>
@@ -46,40 +146,40 @@
         </div>
 
         <!-- Check-in Card -->
-        <div id="checkin-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
+        <div id="checkin-card" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.goal %}block{% else %}none{% endif %}">
             <h3 class="text-lg font-bold text-thrshld-primary mb-4">How are you feeling today?</h3>
             
             <form id="checkin-form" class="space-y-4">
                 <div>
                     <textarea id="status-input" 
                               placeholder="Share how you're feeling, your energy level, any soreness, or what you want to focus on today..."
-                              class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-thrshld-primary focus:border-transparent"
+                              class="w-full p-4 bg-thrshld-bg-primary border border-gray-600 rounded-xl resize-none text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
                               rows="3"></textarea>
                 </div>
-                <button type="submit" id="checkin-btn" class="w-full bg-thrshld-primary text-white py-3 px-6 rounded-xl font-medium hover:bg-thrshld-secondary transition-colors">
+                <button type="submit" id="checkin-btn" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
                     Get My Workout
                 </button>
             </form>
         </div>
 
         <!-- Today's Workout -->
-        <div id="workout-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style="display: none;">
+        <div id="workout-card" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: none;">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-thrshld-primary">Today's Workout</h3>
-                <span class="text-sm text-thrshld-gray-medium bg-gray-100 px-3 py-1 rounded-full">AI Generated</span>
+                <span class="text-sm text-thrshld-gray-medium bg-thrshld-gray-dark px-3 py-1 rounded-full">AI Generated</span>
             </div>
             
             <div id="workout-content" class="prose prose-sm max-w-none text-thrshld-primary mb-6">
                 <!-- Workout content will be inserted here -->
             </div>
             
-            <button id="start-workout-btn" class="w-full bg-thrshld-primary text-white py-4 px-6 rounded-xl font-medium text-lg hover:bg-thrshld-secondary transition-colors">
+            <button id="start-workout-btn" class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-medium text-lg hover:bg-blue-600 transition-colors">
                 Start Workout
             </button>
         </div>
 
         <!-- Progress Widget -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
             <h3 class="text-lg font-bold text-thrshld-primary mb-4">Quick Stats</h3>
             <div class="grid grid-cols-3 gap-4">
                 <div class="text-center">
@@ -103,7 +203,7 @@
         <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Your Progress</h2>
         
         <!-- Workout History -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
             <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recent Sessions</h3>
             <div id="workout-history" class="space-y-4">
                 {% if user_data.history %}
@@ -128,14 +228,14 @@
         </div>
 
         <!-- Statistics Overview -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
             <h3 class="text-lg font-bold text-thrshld-primary mb-4">Overview</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                <div class="text-center p-4 bg-thrshld-gray-dark rounded-xl">
                     <div class="text-3xl font-bold text-thrshld-primary">{{ user_data.stats.completed_workouts or 0 }}</div>
                     <div class="text-sm text-thrshld-gray-medium">Total Workouts</div>
                 </div>
-                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                <div class="text-center p-4 bg-thrshld-gray-dark rounded-xl">
                     <div class="text-3xl font-bold text-thrshld-primary">{{ user_data.stats.current_streak or 0 }}</div>
                     <div class="text-sm text-thrshld-gray-medium">Current Streak</div>
                 </div>
@@ -148,7 +248,7 @@
         <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Recovery</h2>
         
         <!-- Recovery Metrics -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
             <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recovery Metrics</h3>
             <div class="space-y-4">
                 <div class="flex items-center justify-between py-3">
@@ -196,7 +296,7 @@
         </div>
 
         <!-- Recovery Tips -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6">
             <h3 class="text-lg font-bold text-thrshld-primary mb-4">Recovery Tips</h3>
             <div class="space-y-3">
                 <div class="flex items-start">
@@ -220,15 +320,15 @@
         <h2 class="text-2xl font-bold text-thrshld-primary mb-6">Exercise Library</h2>
         
         <!-- Coming Soon -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-8 text-center">
+            <div class="w-16 h-16 bg-thrshld-gray-dark rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-thrshld-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
             </div>
             <h3 class="text-lg font-bold text-thrshld-primary mb-2">Exercise Library</h3>
             <p class="text-thrshld-gray-medium text-sm mb-4">Coming soon - browse our comprehensive exercise database with video demonstrations and form tips.</p>
-            <button class="bg-gray-100 text-thrshld-primary px-4 py-2 rounded-lg font-medium text-sm" disabled>
+            <button class="bg-thrshld-gray-dark text-thrshld-primary px-4 py-2 rounded-lg font-medium text-sm" disabled>
                 Coming Soon
             </button>
         </div>
@@ -237,8 +337,8 @@
 
 <!-- Loading Modal -->
 <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-2xl p-8 text-center max-w-sm mx-4">
-        <div class="w-12 h-12 border-4 border-thrshld-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+    <div class="bg-thrshld-bg-secondary rounded-2xl p-8 text-center max-w-sm mx-4 border border-gray-700">
+        <div class="w-12 h-12 border-4 border-thrshld-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <h3 class="text-lg font-bold text-thrshld-primary mb-2">Creating Your Workout</h3>
         <p class="text-thrshld-gray-medium text-sm">Our AI is personalizing your training...</p>
     </div>

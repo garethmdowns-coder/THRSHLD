@@ -16,6 +16,17 @@ def initialize_user_data():
     if not os.path.exists(USER_DATA_FILE):
         with open(USER_DATA_FILE, "w") as f:
             json.dump({
+                "profile": {
+                    "name": "",
+                    "gender": "",
+                    "weight": "",
+                    "height": "",
+                    "date_of_birth": "",
+                    "experience": "",
+                    "primary_activity": "",
+                    "training_location": "",
+                    "profile_photo": ""
+                },
                 "goal": "", 
                 "history": [], 
                 "check_ins": [],
@@ -144,6 +155,27 @@ def get_user_data():
     except Exception as e:
         logging.error(f"Error loading user data: {e}")
         return jsonify({"error": "Failed to load user data"}), 500
+
+@app.route("/set-profile", methods=["POST"])
+def set_profile():
+    try:
+        data = load_user_data()
+        profile_data = request.json if request.json else {}
+        
+        # Validate required fields
+        required_fields = ["name", "gender", "weight", "height", "date_of_birth", "experience", "primary_activity", "training_location"]
+        for field in required_fields:
+            if not profile_data.get(field, "").strip():
+                return jsonify({"error": f"Please provide your {field.replace('_', ' ')}."}), 400
+        
+        # Update profile data
+        data["profile"].update(profile_data)
+        save_user_data(data)
+        
+        return jsonify({"message": "Profile created successfully!", "profile": data["profile"]})
+    except Exception as e:
+        logging.error(f"Error setting profile: {e}")
+        return jsonify({"error": "Failed to save profile. Please try again."}), 500
 
 @app.route("/clear-data", methods=["POST"])
 def clear_data():
