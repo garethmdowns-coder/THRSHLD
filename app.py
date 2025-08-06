@@ -75,13 +75,28 @@ def index():
             return render_template("profile_setup.html")
         
         # Get user data from database for returning users
-        goals = current_user.goals
-        user_data = {
-            'profile': profile.to_dict() if profile else {},
-            'goals': goals.to_dict() if goals else {},
-            'stats': get_user_stats(current_user.id)
-        }
-        return render_template("index.html", user_data=user_data)
+        logging.debug(f"Loading main app for user: {current_user.email}")
+        try:
+            goals = current_user.goals
+            user_data = {
+                'profile': profile.to_dict() if profile and hasattr(profile, 'to_dict') else {'name': profile.name if profile else ''},
+                'goals': goals.to_dict() if goals and hasattr(goals, 'to_dict') else {},
+                'stats': get_user_stats(current_user.id) if hasattr(current_user, 'id') else {}
+            }
+            logging.debug(f"User data loaded successfully: {user_data}")
+            return render_template("index.html", user_data=user_data)
+        except Exception as e:
+            logging.error(f"Error loading user data: {e}")
+            import traceback
+            logging.error(f"Full traceback: {traceback.format_exc()}")
+            # Fallback to simple profile data
+            user_data = {
+                'profile': {'name': profile.name if profile else ''},
+                'goals': {},
+                'stats': {'total_workouts': 0, 'current_streak': 0, 'personal_records': 0}
+            }
+            logging.debug(f"Using fallback user data: {user_data}")
+            return render_template("index.html", user_data=user_data)
     else:
         return render_template("auth.html")
 
@@ -103,6 +118,7 @@ def profile_setup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
+        logging.debug("User already authenticated, redirecting to index")
         return redirect("/")
         
     if request.method == "POST":
@@ -138,7 +154,7 @@ def login():
                     logging.debug("User needs profile setup, rendering profile setup template directly")
                     return render_template("profile_setup.html")
                 else:
-                    logging.debug("Redirecting to index")
+                    logging.debug("User has complete profile, redirecting to main app")
                     return redirect("/")
             else:
                 flash("Invalid email or password")
@@ -529,8 +545,8 @@ def set_profile():
         profile.name = profile_data.get('name', '').strip()
         profile.age = int(profile_data.get('age', 0)) if profile_data.get('age') else None
         profile.gender = profile_data.get('gender', '')
-        profile.height = float(profile_data.get('height', 0)) if profile_data.get('height') else None
-        profile.weight = float(profile_data.get('weight', 0)) if profile_data.get('weight') else None
+        profile.height_cm = float(profile_data.get('height', 0)) if profile_data.get('height') else None
+        profile.weight_kg = float(profile_data.get('weight', 0)) if profile_data.get('weight') else None
         profile.experience_level = profile_data.get('experience', '')
         profile.primary_activity = profile_data.get('primary_activity', '')
         profile.training_location = profile_data.get('training_location', '')
