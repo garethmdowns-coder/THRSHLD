@@ -485,9 +485,18 @@ def get_user_data():
         return jsonify({"error": "Failed to load user data"}), 500
 
 @app.route("/set-profile", methods=["POST"])
-@login_required
 def set_profile():
     try:
+        # Manual authentication check instead of @login_required decorator
+        from flask import session
+        logging.debug(f"Set profile - Session: {dict(session)}")
+        logging.debug(f"Set profile - User authenticated: {current_user.is_authenticated}")
+        logging.debug(f"Set profile - Current user: {current_user.email if current_user.is_authenticated else 'Anonymous'}")
+        
+        if not current_user.is_authenticated:
+            logging.debug("User not authenticated, returning error")
+            return jsonify({"success": False, "error": "Authentication required"}), 401
+        
         profile_data = request.get_json()
         logging.debug(f"Profile data received: {profile_data}")
         
@@ -506,8 +515,8 @@ def set_profile():
         profile.name = profile_data.get('name', '').strip()
         profile.age = int(profile_data.get('age', 0)) if profile_data.get('age') else None
         profile.gender = profile_data.get('gender', '')
-        profile.height_cm = float(profile_data.get('height', 0)) if profile_data.get('height') else None
-        profile.weight_kg = float(profile_data.get('weight', 0)) if profile_data.get('weight') else None
+        profile.height = float(profile_data.get('height', 0)) if profile_data.get('height') else None
+        profile.weight = float(profile_data.get('weight', 0)) if profile_data.get('weight') else None
         profile.experience_level = profile_data.get('experience', '')
         profile.primary_activity = profile_data.get('primary_activity', '')
         profile.training_location = profile_data.get('training_location', '')
