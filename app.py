@@ -50,10 +50,14 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "your-openai-api-key")
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        # Get user data from database
+        # Check if user has completed profile setup
         profile = current_user.profile
-        goals = current_user.goals
+        if not profile or not profile.name:
+            # Redirect new users to profile setup
+            return redirect(url_for("profile_setup"))
         
+        # Get user data from database for returning users
+        goals = current_user.goals
         user_data = {
             'profile': profile.to_dict() if profile else {},
             'goals': goals.to_dict() if goals else {},
@@ -63,8 +67,17 @@ def index():
     else:
         return render_template("auth.html")
 
+@app.route("/profile-setup")
+@login_required
+def profile_setup():
+    # Show profile setup page for new users
+    return render_template("profile_setup.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+        
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -77,7 +90,12 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
-            return redirect(url_for("index"))
+            
+            # Check if user needs to complete profile setup
+            if not user.profile or not user.profile.name:
+                return redirect(url_for("profile_setup"))
+            else:
+                return redirect(url_for("index"))
         else:
             flash("Invalid email or password")
             return render_template("auth.html")
@@ -86,6 +104,9 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+        
     email = request.form.get("email")
     password = request.form.get("password")
     confirm_password = request.form.get("confirm_password")
@@ -102,6 +123,7 @@ def register():
         flash("Email already registered")
         return render_template("auth.html")
     
+    # Create new user
     user = User(email=email)
     user.set_password(password)
     
@@ -109,7 +131,9 @@ def register():
     db.session.commit()
     
     login_user(user)
-    return redirect(url_for("index"))
+    
+    # New users go to profile setup
+    return redirect(url_for("profile_setup"))
 
 @app.route("/logout")
 @login_required

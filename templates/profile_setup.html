@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THRSHLD - Profile Setup</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configure Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'thrshld': {
+                            'primary': '#ffffff',
+                            'secondary': '#e5e7eb',
+                            'accent': '#3b82f6',
+                            'gray-light': '#000000',
+                            'gray-medium': '#9ca3af',
+                            'gray-dark': '#374151',
+                            'bg-primary': '#000000',
+                            'bg-secondary': '#111111',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark bg-thrshld-bg-primary text-thrshld-primary font-sans antialiased min-h-screen">
+    <!-- Header -->
+    <div class="bg-thrshld-bg-secondary border-b border-gray-800 p-4">
+        <div class="flex items-center justify-between max-w-md mx-auto">
+            <h1 class="text-2xl font-bold text-thrshld-primary">THRSHLD</h1>
+            <a href="{{ url_for('logout') }}" class="text-thrshld-gray-medium hover:text-thrshld-primary text-sm">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto p-6">
+        <!-- Welcome Message -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-thrshld-primary mb-2">Welcome to THRSHLD</h2>
+            <p class="text-thrshld-gray-medium">Let's set up your profile to create personalized workouts</p>
+        </div>
+
+        <!-- Profile Setup Form -->
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-800 p-6">
+            <form id="profile-setup-form" class="space-y-6">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-thrshld-primary mb-2">Full Name *</label>
+                    <input type="text" id="name" name="name" required
+                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
+                           placeholder="Enter your full name">
+                </div>
+
+                <!-- Age -->
+                <div>
+                    <label for="age" class="block text-sm font-medium text-thrshld-primary mb-2">Age</label>
+                    <input type="number" id="age" name="age" min="13" max="100"
+                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
+                           placeholder="Enter your age">
+                </div>
+
+                <!-- Gender -->
+                <div>
+                    <label for="gender" class="block text-sm font-medium text-thrshld-primary mb-2">Gender</label>
+                    <select id="gender" name="gender"
+                            class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="prefer-not-to-say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <!-- Weight -->
+                <div>
+                    <label for="weight" class="block text-sm font-medium text-thrshld-primary mb-2">Weight (kg)</label>
+                    <input type="number" id="weight" name="weight" step="0.1" min="30" max="300"
+                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
+                           placeholder="Enter your weight">
+                </div>
+
+                <!-- Height -->
+                <div>
+                    <label for="height" class="block text-sm font-medium text-thrshld-primary mb-2">Height (cm)</label>
+                    <input type="number" id="height" name="height" min="100" max="250"
+                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent"
+                           placeholder="Enter your height">
+                </div>
+
+                <!-- Experience Level -->
+                <div>
+                    <label for="experience" class="block text-sm font-medium text-thrshld-primary mb-2">Experience Level</label>
+                    <select id="experience" name="experience"
+                            class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select experience level</option>
+                        <option value="beginner">Beginner (0-6 months)</option>
+                        <option value="intermediate">Intermediate (6 months - 2 years)</option>
+                        <option value="advanced">Advanced (2+ years)</option>
+                    </select>
+                </div>
+
+                <!-- Training Location -->
+                <div>
+                    <label for="training_location" class="block text-sm font-medium text-thrshld-primary mb-2">Where do you train?</label>
+                    <select id="training_location" name="training_location"
+                            class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select training location</option>
+                        <option value="gym">Gym</option>
+                        <option value="home">Home</option>
+                        <option value="outdoor">Outdoor</option>
+                        <option value="hybrid">Combination</option>
+                    </select>
+                </div>
+
+                <!-- Training Days -->
+                <div>
+                    <label for="training_days" class="block text-sm font-medium text-thrshld-primary mb-2">How many days per week do you want to train?</label>
+                    <select id="training_days" name="training_days"
+                            class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select training frequency</option>
+                        <option value="2">2 days per week</option>
+                        <option value="3">3 days per week</option>
+                        <option value="4">4 days per week</option>
+                        <option value="5">5 days per week</option>
+                        <option value="6">6 days per week</option>
+                        <option value="7">7 days per week</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="save-profile-btn"
+                        class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-600 transition-colors">
+                    Complete Profile Setup
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading and Error Messages -->
+        <div id="setup-loading" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-thrshld-bg-secondary rounded-xl p-6 border border-gray-700">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-thrshld-accent mx-auto mb-4"></div>
+                    <p class="text-thrshld-primary">Setting up your profile...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Toast -->
+        <div id="setup-error-toast" class="toast-container">
+            <div class="toast toast-error">
+                <div class="toast-content">
+                    <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span id="setup-error-message">Error occurred</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 10px;
+        }
+
+        .toast.toast-show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast-error {
+            background-color: #1f2937;
+            border: 1px solid #ef4444;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+    </style>
+
+    <script>
+        document.getElementById('profile-setup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const profileData = {
+                name: formData.get('name'),
+                age: formData.get('age'),
+                gender: formData.get('gender'),
+                weight: formData.get('weight'),
+                height: formData.get('height'),
+                experience: formData.get('experience'),
+                training_location: formData.get('training_location'),
+                training_days: formData.get('training_days')
+            };
+
+            // Validate required fields
+            if (!profileData.name.trim()) {
+                showError('Name is required');
+                return;
+            }
+
+            try {
+                setLoading(true);
+
+                const response = await fetch('/set-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Redirect to main app
+                    window.location.href = '/';
+                } else {
+                    showError(data.error || 'Failed to save profile');
+                }
+            } catch (error) {
+                console.error('Profile setup error:', error);
+                showError('Network error. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function setLoading(loading) {
+            const loadingModal = document.getElementById('setup-loading');
+            const submitBtn = document.getElementById('save-profile-btn');
+            
+            if (loadingModal) {
+                loadingModal.style.display = loading ? 'flex' : 'none';
+            }
+            
+            if (submitBtn) {
+                submitBtn.disabled = loading;
+                submitBtn.textContent = loading ? 'Setting up...' : 'Complete Profile Setup';
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('setup-error-message');
+            const errorToast = document.getElementById('setup-error-toast').querySelector('.toast');
+            
+            if (errorMessage) errorMessage.textContent = message;
+            
+            if (errorToast) {
+                errorToast.classList.add('toast-show');
+                setTimeout(() => {
+                    errorToast.classList.remove('toast-show');
+                }, 4000);
+            }
+        }
+    </script>
+</body>
+</html>
