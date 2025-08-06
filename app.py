@@ -92,20 +92,31 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
         
+        logging.debug(f"Login attempt for email: {email}")
+        
         if not email or not password:
             flash("Email and password are required")
             return render_template("auth.html")
         
         user = User.query.filter_by(email=email).first()
+        logging.debug(f"User found: {user is not None}")
         
-        if user and user.check_password(password):
-            login_user(user)
+        if user:
+            password_valid = user.check_password(password)
+            logging.debug(f"Password valid: {password_valid}")
             
-            # Check if user needs to complete profile setup
-            if not user.profile or not user.profile.name:
-                return redirect(url_for("profile_setup"))
+            if password_valid:
+                login_user(user)
+                logging.debug(f"User logged in successfully: {user.email}")
+                
+                # Check if user needs to complete profile setup
+                if not user.profile or not user.profile.name:
+                    return redirect(url_for("profile_setup"))
+                else:
+                    return redirect(url_for("index"))
             else:
-                return redirect(url_for("index"))
+                flash("Invalid email or password")
+                return render_template("auth.html")
         else:
             flash("Invalid email or password")
             return render_template("auth.html")
