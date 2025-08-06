@@ -127,7 +127,8 @@ button:active {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-    .border-gray-600 {
+    .border-gray-700,
+    .border-gray-800 {
         border-color: #ffffff;
     }
     

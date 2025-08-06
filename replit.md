@@ -7,19 +7,19 @@ THRSHLD is a personalized fitness coaching web application that helps users set 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Design preference: Dark mode interface with professional styling.
-User onboarding preference: Comprehensive profile setup before goal setting.
+Design preference: Pure black background with white text for maximum contrast.
+User onboarding preference: Profile setup must be completed before accessing any other app features.
 
 ## System Architecture
 
 ### Frontend Architecture
 - **Mobile-First Design**: Single-page application optimized for mobile devices with responsive design
-- **Dark Mode Interface**: Professional dark theme with high contrast and accessibility support
+- **Pure Black Interface**: High contrast design with pure black background and white text for maximum readability
 - **Template Engine**: Flask's Jinja2 templating system for server-side rendering
 - **UI Framework**: Tailwind CSS for utility-first styling with custom dark color scheme
 - **JavaScript**: Vanilla JavaScript for client-side interactions and API communication
 - **Component Structure**: Modular tab-based interface (Today, Progress, Recovery, Library) with dynamic content loading
-- **User Onboarding**: Comprehensive profile setup flow before goal setting and workout generation
+- **Gated Onboarding**: Full-screen profile setup that blocks access to all other features until completed
 
 ### Backend Architecture
 - **Web Framework**: Flask (Python) for lightweight web server and API endpoints

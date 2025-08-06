@@ -3,107 +3,109 @@
 {% block content %}
 <div class="py-6">
     <!-- Profile Setup Card -->
-    <div id="profile-setup" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if not user_data.profile or not user_data.profile.name %}block{% else %}none{% endif %}">
-        <div class="text-center mb-6">
-            <div class="w-20 h-20 bg-thrshld-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
+    <div id="profile-setup" class="min-h-screen flex flex-col justify-center px-6" style="display: {% if not user_data.profile or not user_data.profile.name %}block{% else %}none{% endif %}">
+        <div class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-800 p-8">
+            <div class="text-center mb-8">
+                <div class="w-24 h-24 bg-thrshld-accent rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-thrshld-primary mb-3">Welcome to THRSHLD</h1>
+                <p class="text-thrshld-gray-medium">Let's create your profile to get personalized workouts</p>
             </div>
-            <h2 class="text-2xl font-bold text-thrshld-primary mb-2">Welcome to THRSHLD</h2>
-            <p class="text-thrshld-gray-medium text-sm">Let's create your profile to get personalized workouts</p>
+            
+            <form id="profile-form" class="space-y-5">
+                <!-- Name -->
+                <div>
+                    <label for="name-input" class="block text-sm font-medium text-thrshld-primary mb-2">Name</label>
+                    <input type="text" id="name-input" 
+                           placeholder="Enter your name"
+                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                </div>
+
+                <!-- Gender -->
+                <div>
+                    <label for="gender-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gender</label>
+                    <select id="gender-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="prefer_not_to_say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <!-- Weight & Height -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="weight-input" class="block text-sm font-medium text-thrshld-primary mb-2">Weight</label>
+                        <input type="text" id="weight-input" 
+                               placeholder="e.g., 70kg"
+                               class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="height-input" class="block text-sm font-medium text-thrshld-primary mb-2">Height</label>
+                        <input type="text" id="height-input" 
+                               placeholder="e.g., 175cm"
+                               class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div>
+                    <label for="dob-input" class="block text-sm font-medium text-thrshld-primary mb-2">Date of Birth</label>
+                    <input type="date" id="dob-input" 
+                           class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                </div>
+
+                <!-- Experience Level -->
+                <div>
+                    <label for="experience-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gym Experience</label>
+                    <select id="experience-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select experience level</option>
+                        <option value="beginner">Beginner (0-6 months)</option>
+                        <option value="novice">Novice (6 months - 2 years)</option>
+                        <option value="intermediate">Intermediate (2-5 years)</option>
+                        <option value="advanced">Advanced (5+ years)</option>
+                    </select>
+                </div>
+
+                <!-- Primary Activity -->
+                <div>
+                    <label for="activity-input" class="block text-sm font-medium text-thrshld-primary mb-2">Primary Activity</label>
+                    <select id="activity-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select primary activity</option>
+                        <option value="weightlifting">Weightlifting</option>
+                        <option value="running">Running</option>
+                        <option value="conditioning">Conditioning/CrossFit</option>
+                        <option value="bodybuilding">Bodybuilding</option>
+                        <option value="powerlifting">Powerlifting</option>
+                        <option value="general_fitness">General Fitness</option>
+                    </select>
+                </div>
+
+                <!-- Training Location -->
+                <div>
+                    <label for="location-input" class="block text-sm font-medium text-thrshld-primary mb-2">Where do you train?</label>
+                    <select id="location-input" class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
+                        <option value="">Select training location</option>
+                        <option value="gym">Commercial Gym</option>
+                        <option value="home">Home Gym</option>
+                        <option value="outdoor">Outdoor</option>
+                        <option value="mixed">Mixed (Gym + Home)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-thrshld-accent text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-600 transition-colors mt-6">
+                    Create My Profile
+                </button>
+            </form>
         </div>
-        
-        <form id="profile-form" class="space-y-4">
-            <!-- Name -->
-            <div>
-                <label for="name-input" class="block text-sm font-medium text-thrshld-primary mb-2">Name</label>
-                <input type="text" id="name-input" 
-                       placeholder="Enter your name"
-                       class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-            </div>
-
-            <!-- Gender -->
-            <div>
-                <label for="gender-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gender</label>
-                <select id="gender-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer_not_to_say">Prefer not to say</option>
-                </select>
-            </div>
-
-            <!-- Weight & Height -->
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="weight-input" class="block text-sm font-medium text-thrshld-primary mb-2">Weight</label>
-                    <input type="text" id="weight-input" 
-                           placeholder="e.g., 70kg"
-                           class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                </div>
-                <div>
-                    <label for="height-input" class="block text-sm font-medium text-thrshld-primary mb-2">Height</label>
-                    <input type="text" id="height-input" 
-                           placeholder="e.g., 175cm"
-                           class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                </div>
-            </div>
-
-            <!-- Date of Birth -->
-            <div>
-                <label for="dob-input" class="block text-sm font-medium text-thrshld-primary mb-2">Date of Birth</label>
-                <input type="date" id="dob-input" 
-                       class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-            </div>
-
-            <!-- Experience Level -->
-            <div>
-                <label for="experience-input" class="block text-sm font-medium text-thrshld-primary mb-2">Gym Experience</label>
-                <select id="experience-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                    <option value="">Select experience level</option>
-                    <option value="beginner">Beginner (0-6 months)</option>
-                    <option value="novice">Novice (6 months - 2 years)</option>
-                    <option value="intermediate">Intermediate (2-5 years)</option>
-                    <option value="advanced">Advanced (5+ years)</option>
-                </select>
-            </div>
-
-            <!-- Primary Activity -->
-            <div>
-                <label for="activity-input" class="block text-sm font-medium text-thrshld-primary mb-2">Primary Activity</label>
-                <select id="activity-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                    <option value="">Select primary activity</option>
-                    <option value="weightlifting">Weightlifting</option>
-                    <option value="running">Running</option>
-                    <option value="conditioning">Conditioning/CrossFit</option>
-                    <option value="bodybuilding">Bodybuilding</option>
-                    <option value="powerlifting">Powerlifting</option>
-                    <option value="general_fitness">General Fitness</option>
-                </select>
-            </div>
-
-            <!-- Training Location -->
-            <div>
-                <label for="location-input" class="block text-sm font-medium text-thrshld-primary mb-2">Where do you train?</label>
-                <select id="location-input" class="w-full p-3 bg-thrshld-bg-primary border border-gray-600 rounded-xl text-thrshld-primary focus:ring-2 focus:ring-thrshld-accent focus:border-transparent">
-                    <option value="">Select training location</option>
-                    <option value="gym">Commercial Gym</option>
-                    <option value="home">Home Gym</option>
-                    <option value="outdoor">Outdoor</option>
-                    <option value="mixed">Mixed (Gym + Home)</option>
-                </select>
-            </div>
-
-            <button type="submit" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
-                Create My Profile
-            </button>
-        </form>
     </div>
 
     <!-- Today Tab -->
-    <div id="today-content" class="tab-content">
+    <div id="today-content" class="tab-content" style="display: none;">
         <!-- Goal Setting Card -->
         <div id="goal-setup" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: {% if user_data.profile and user_data.profile.name and not user_data.goal %}block{% else %}none{% endif %}">
             <div class="text-center mb-4">

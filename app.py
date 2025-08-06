@@ -61,6 +61,8 @@ def index():
     user_data = load_user_data()
     return render_template("index.html", user_data=user_data)
 
+
+
 @app.route("/set-goal", methods=["POST"])
 def set_goal():
     try:
@@ -159,23 +161,35 @@ def get_user_data():
 @app.route("/set-profile", methods=["POST"])
 def set_profile():
     try:
-        data = load_user_data()
-        profile_data = request.json if request.json else {}
+        profile_data = request.get_json()
         
-        # Validate required fields
-        required_fields = ["name", "gender", "weight", "height", "date_of_birth", "experience", "primary_activity", "training_location"]
-        for field in required_fields:
-            if not profile_data.get(field, "").strip():
-                return jsonify({"error": f"Please provide your {field.replace('_', ' ')}."}), 400
+        # Basic validation
+        if not profile_data.get('name', '').strip():
+            return jsonify({'error': 'Name is required'}), 400
+            
+        # Load existing user data
+        user_data = load_user_data()
         
-        # Update profile data
-        data["profile"].update(profile_data)
-        save_user_data(data)
+        # Update profile
+        user_data['profile'] = {
+            'name': profile_data.get('name', '').strip(),
+            'gender': profile_data.get('gender', ''),
+            'weight': profile_data.get('weight', '').strip(),
+            'height': profile_data.get('height', '').strip(),
+            'date_of_birth': profile_data.get('date_of_birth', ''),
+            'experience': profile_data.get('experience', ''),
+            'primary_activity': profile_data.get('primary_activity', ''),
+            'training_location': profile_data.get('training_location', '')
+        }
         
-        return jsonify({"message": "Profile created successfully!", "profile": data["profile"]})
+        # Save updated data
+        save_user_data(user_data)
+        
+        return jsonify({'success': True, 'message': 'Profile created successfully!'})
+        
     except Exception as e:
         logging.error(f"Error setting profile: {e}")
-        return jsonify({"error": "Failed to save profile. Please try again."}), 500
+        return jsonify({'error': 'Failed to create profile'}), 500
 
 @app.route("/clear-data", methods=["POST"])
 def clear_data():

@@ -25,11 +25,11 @@
                             'primary': '#ffffff',
                             'secondary': '#e5e7eb',
                             'accent': '#3b82f6',
-                            'gray-light': '#111827',
-                            'gray-medium': '#6b7280',
-                            'gray-dark': '#1f2937',
-                            'bg-primary': '#0f172a',
-                            'bg-secondary': '#1e293b',
+                            'gray-light': '#000000',
+                            'gray-medium': '#9ca3af',
+                            'gray-dark': '#374151',
+                            'bg-primary': '#000000',
+                            'bg-secondary': '#111111',
                         }
                     },
                     fontFamily: {
@@ -42,7 +42,7 @@
 </head>
 <body class="dark bg-thrshld-bg-primary text-thrshld-primary font-sans antialiased">
     <!-- Header -->
-    <header class="bg-thrshld-bg-secondary shadow-sm border-b border-gray-700 sticky top-0 z-50">
+    <header id="app-header" class="bg-thrshld-bg-secondary shadow-sm border-b border-gray-800 sticky top-0 z-50" style="display: none;">
         <div class="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
             <h1 class="text-2xl font-bold text-thrshld-primary tracking-tight">THRSHLD</h1>
             <button id="profile-btn" class="p-2 rounded-full bg-thrshld-gray-dark hover:bg-gray-600 transition-colors">
@@ -59,7 +59,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-thrshld-bg-secondary border-t border-gray-700 shadow-lg">
+    <nav id="app-navigation" class="fixed bottom-0 left-0 right-0 bg-thrshld-bg-secondary border-t border-gray-800 shadow-lg" style="display: none;">
         <div class="max-w-lg mx-auto">
             <div class="flex items-center justify-around py-2">
                 <button onclick="showTab('today')" id="tab-today" class="nav-tab flex flex-col items-center py-2 px-4 text-thrshld-primary">

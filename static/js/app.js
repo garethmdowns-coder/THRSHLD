@@ -26,13 +26,30 @@ const successToast = document.getElementById('success-toast');
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
     initializeEventListeners();
-    showTab('today');
     
-    // Check if we have a goal and show appropriate UI
-    const hasGoal = currentGoal && currentGoal.textContent.trim();
-    if (!hasGoal) {
-        showGoalSetup();
-    }
+    // Check if profile exists to determine app state
+    fetch('/get-user-data')
+        .then(response => response.json())
+        .then(data => {
+            if (data.profile && data.profile.name) {
+                // Profile exists, show main app
+                showMainApp();
+                showTab('today');
+                
+                // Check if we have a goal and show appropriate UI
+                const hasGoal = data.goal && data.goal.trim();
+                if (!hasGoal) {
+                    showGoalSetup();
+                }
+            } else {
+                // No profile, stay in onboarding
+                hideMainApp();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking profile:', error);
+            hideMainApp();
+        });
 });
 
 function initializeEventListeners() {
@@ -148,7 +165,40 @@ async function handleProfileSubmission(event) {
 
 function showProfileComplete() {
     if (profileSetup) profileSetup.style.display = 'none';
+    showMainApp();
     if (goalSetup) goalSetup.style.display = 'block';
+}
+
+function showMainApp() {
+    const header = document.getElementById('app-header');
+    const navigation = document.getElementById('app-navigation');
+    const todayContent = document.getElementById('today-content');
+    
+    if (header) header.style.display = 'block';
+    if (navigation) navigation.style.display = 'block';
+    if (todayContent) todayContent.style.display = 'block';
+    
+    // Adjust main content padding when app UI is visible
+    const main = document.querySelector('main');
+    if (main) {
+        main.classList.add('pb-24');
+    }
+}
+
+function hideMainApp() {
+    const header = document.getElementById('app-header');
+    const navigation = document.getElementById('app-navigation');
+    const todayContent = document.getElementById('today-content');
+    
+    if (header) header.style.display = 'none';
+    if (navigation) navigation.style.display = 'none';
+    if (todayContent) todayContent.style.display = 'none';
+    
+    // Remove padding when in onboarding
+    const main = document.querySelector('main');
+    if (main) {
+        main.classList.remove('pb-24');
+    }
 }
 
 // Goal Management
