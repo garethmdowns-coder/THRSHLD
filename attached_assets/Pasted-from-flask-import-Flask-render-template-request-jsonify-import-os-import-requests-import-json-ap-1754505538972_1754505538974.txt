@@ -1,0 +1,79 @@
+from flask import Flask, render_template, request, jsonify
+import os
+import requests
+import json
+
+app = Flask(__name__)
+
+USER_DATA_FILE = "user_data.json"
+
+def initialize_user_data():
+    if not os.path.exists(USER_DATA_FILE):
+        with open(USER_DATA_FILE, "w") as f:
+            json.dump({"goal": "", "history": [], "check_ins": []}, f)
+
+def load_user_data():
+    with open(USER_DATA_FILE, "r") as f:
+        return json.load(f)
+
+def save_user_data(data):
+    with open(USER_DATA_FILE, "w") as f:
+        json.dump(data, f)
+
+initialize_user_data()
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/set-goal", methods=["POST"])
+def set_goal():
+    data = load_user_data()
+    goal = request.json.get("goal")
+    if not isinstance(goal, str):
+        return jsonify({"error": "Invalid goal format."}), 400
+    data["goal"] = goal.strip()
+    save_user_data(data)
+    return jsonify({"message": "Goal updated."})
+
+@app.route("/check-in", methods=["POST"])
+def check_in():
+    user_data = load_user_data()
+    status = request.json.get("status")
+    if not isinstance(status, str):
+        return jsonify({"error": "Invalid check-in format."}), 400
+    user_data["check_ins"].append(status.strip())
+    save_user_data(user_data)
+
+    prompt = f"User goal: {user_data['goal']}. Check-in: {status}. Based on this, what should today's workout be?"
+
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "gpt-4o",
+        "messages": [
+            {"role": "system", "content": "You are a personalized fitness coach."},
+            {"role": "user", "content": prompt}
+        ]
+    }
+
+    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to get response from OpenAI API."}), 500
+
+    result = response.json()
+    reply = result.get("choices", [{}])[0].get("message", {}).get("content", "No response.")
+
+    user_data["history"].append({"check_in": status, "response": reply})
+    save_user_data(user_data)
+
+    return jsonify({"reply": reply})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=81)
