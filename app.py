@@ -82,6 +82,10 @@ def index():
 def profile_setup():
     # Show profile setup page for new users
     logging.debug(f"Profile setup accessed by user: {current_user.email}")
+    # Check if user already has a complete profile
+    if current_user.profile and current_user.profile.name:
+        logging.debug("User already has profile, redirecting to main app")
+        return redirect("/")
     return render_template("profile_setup.html")
 
 @app.route("/login", methods=["GET", "POST"])
