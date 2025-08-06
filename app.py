@@ -607,6 +607,12 @@ def set_profile():
         profile.five_km_time = profile_data.get('five_km_time', '').strip() if profile_data.get('five_km_time') else None
         profile.preferred_intensity = profile_data.get('preferred_intensity', '').strip() if profile_data.get('preferred_intensity') else None
         
+        # Clear any cached workout data to force regeneration with new performance data
+        # This ensures the AI uses updated 1RM values for workout programming
+        logging.debug(f"Performance data updated for user {current_user.email}: "
+                     f"Squat: {profile.squat_1rm}kg, Bench: {profile.bench_1rm}kg, "
+                     f"Deadlift: {profile.deadlift_1rm}kg, OHP: {profile.overhead_press_1rm}kg")
+        
         # Parse date of birth if provided
         if profile_data.get('date_of_birth'):
             try:

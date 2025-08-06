@@ -225,7 +225,17 @@ async function handleProfileSubmission(event) {
         if (response.ok) {
             // Check if we're editing or creating
             const title = document.querySelector('#profile-setup h1');
-            if (title && title.textContent === 'Edit Profile') {
+            const isProgrammeUpdate = document.querySelector('#profile-setup[data-programme-update]');
+            
+            if (isProgrammeUpdate) {
+                // Programme update - show regeneration message and return to Today tab
+                showMainApp();
+                showTab('today');
+                showSuccess('Programme regenerated! Check in now to get your updated workout plan.');
+                
+                // Remove the programme update flag
+                document.getElementById('profile-setup').removeAttribute('data-programme-update');
+            } else if (title && (title.textContent === 'Edit Profile' || title.textContent === 'Update Your Programme')) {
                 // Update profile display with new data
                 updateProfileDisplay(profileData);
                 // Return to profile tab after editing
@@ -461,24 +471,26 @@ function updateProfileDisplay(profileData) {
 function showEditGoals() {
     // Show confirmation dialog
     if (confirm('Consistency is key to progress and this will start a brand new programme - are you sure you want to proceed?')) {
-        hideAllPages();
-        const goalsContent = document.getElementById('goals-content');
-        if (goalsContent) {
-            goalsContent.style.display = 'block';
+        // Use the profile setup form for enhanced goals/profile update
+        showEditProfile();
+        
+        // Modify the profile setup to focus on programme update
+        const profileSetup = document.getElementById('profile-setup');
+        if (profileSetup) {
+            // Change form title
+            const title = profileSetup.querySelector('h1');
+            if (title) title.textContent = 'Update Your Programme';
             
-            // Hide app navigation for full-screen editing
-            const navigation = document.getElementById('app-navigation');
-            const header = document.getElementById('app-header');
-            if (navigation) navigation.style.display = 'none';
-            if (header) header.style.display = 'none';
+            // Change description
+            const description = profileSetup.querySelector('p');
+            if (description) description.textContent = 'Update your goals and performance data to regenerate your training programme';
             
-            // Update form title for editing
-            const title = goalsContent.querySelector('h1');
-            if (title) title.textContent = 'Update Your Goals';
+            // Change button text
+            const submitBtn = profileSetup.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.textContent = 'Regenerate Programme';
             
-            // Update button text
-            const submitBtn = goalsContent.querySelector('button[type="submit"]');
-            if (submitBtn) submitBtn.textContent = 'Update Programme';
+            // Add a flag to indicate this is a programme update
+            profileSetup.setAttribute('data-programme-update', 'true');
         }
     }
 }
