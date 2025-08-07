@@ -242,6 +242,36 @@
             </div>
         </div>
 
+        <!-- Check-in Form -->
+        <div id="checkin-card" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
+            <h3 class="text-lg font-bold text-thrshld-primary mb-4">Daily Check-in</h3>
+            <form id="checkin-form" class="space-y-4">
+                <div>
+                    <label for="status-input" class="block text-sm font-medium text-thrshld-primary mb-2">How are you feeling today?</label>
+                    <textarea id="status-input" 
+                              placeholder="I'm feeling energetic and ready to train..." 
+                              class="w-full p-4 bg-thrshld-bg-primary border border-gray-700 rounded-xl text-thrshld-primary placeholder-thrshld-gray-medium focus:ring-2 focus:ring-thrshld-accent focus:border-transparent resize-none"
+                              rows="3"></textarea>
+                </div>
+                <button type="submit" id="checkin-btn" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
+                    Get My Workout
+                </button>
+            </form>
+        </div>
+
+        <!-- Workout Display -->
+        <div id="workout-card" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6" style="display: none;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-thrshld-primary">Today's Workout</h3>
+                <button id="start-workout-btn" class="bg-thrshld-accent text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors">
+                    Start Workout
+                </button>
+            </div>
+            <div id="workout-content" class="prose prose-invert prose-sm max-w-none">
+                <!-- Workout content will be dynamically inserted here -->
+            </div>
+        </div>
+
         <!-- Today's Workout Widget -->
         <div id="todays-workout" class="bg-thrshld-bg-secondary rounded-2xl shadow-sm border border-gray-700 p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
@@ -254,7 +284,7 @@
                 <p id="workout-summary" class="text-thrshld-gray-medium text-sm">Bench Press, Pull-Ups, Conditioning</p>
             </div>
             
-            <button id="log-workout-btn" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
+            <button onclick="startWorkoutFlow()" class="w-full bg-thrshld-accent text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-600 transition-colors">
                 Log Workout
             </button>
         </div>

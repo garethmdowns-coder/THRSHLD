@@ -29,19 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     initializeEventListeners();
     
-    // Initialize "Log Workout" button
-    const logWorkoutBtn = document.getElementById('log-workout-btn');
-    if (logWorkoutBtn) {
-        logWorkoutBtn.addEventListener('click', function() {
-            // Show check-in form when "Log Workout" is clicked
-            showTab('today');
-            const statusInput = document.getElementById('status-input');
-            if (statusInput) {
-                statusInput.focus();
-                statusInput.placeholder = "How are you feeling today? Ready to train?";
-            }
-        });
-    }
+    // Log Workout functionality will use startWorkoutFlow() function defined below
     
     // Load saved goals if they exist
     const savedGoals = localStorage.getItem('userGoals');
@@ -1133,6 +1121,18 @@ function connectStrava() {
             }, 1000);
         }
     }, 1000);
+}
+
+function startWorkoutFlow() {
+    // Show check-in form when "Log Workout" is clicked
+    showTab('today');
+    const statusInput = document.getElementById('status-input');
+    if (statusInput) {
+        statusInput.focus();
+        statusInput.placeholder = "How are you feeling today? Ready to train?";
+        // Scroll to the input
+        statusInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 async function disconnectStrava() {
