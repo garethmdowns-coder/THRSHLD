@@ -29,6 +29,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     initializeEventListeners();
     
+    // Initialize "Log Workout" button
+    const logWorkoutBtn = document.getElementById('log-workout-btn');
+    if (logWorkoutBtn) {
+        logWorkoutBtn.addEventListener('click', function() {
+            // Show check-in form when "Log Workout" is clicked
+            showTab('today');
+            const statusInput = document.getElementById('status-input');
+            if (statusInput) {
+                statusInput.focus();
+                statusInput.placeholder = "How are you feeling today? Ready to train?";
+            }
+        });
+    }
+    
     // Load saved goals if they exist
     const savedGoals = localStorage.getItem('userGoals');
     if (savedGoals) {
@@ -474,27 +488,8 @@ function updateProfileDisplay(profileData) {
 function showEditGoals() {
     // Show confirmation dialog
     if (confirm('Consistency is key to progress and this will start a brand new programme - are you sure you want to proceed?')) {
-        // Use the profile setup form for enhanced goals/profile update
-        showEditProfile();
-        
-        // Modify the profile setup to focus on programme update
-        const profileSetup = document.getElementById('profile-setup');
-        if (profileSetup) {
-            // Change form title
-            const title = profileSetup.querySelector('h1');
-            if (title) title.textContent = 'Update Your Programme';
-            
-            // Change description
-            const description = profileSetup.querySelector('p');
-            if (description) description.textContent = 'Update your goals and performance data to regenerate your training programme';
-            
-            // Change button text
-            const submitBtn = profileSetup.querySelector('button[type="submit"]');
-            if (submitBtn) submitBtn.textContent = 'Regenerate Programme';
-            
-            // Add a flag to indicate this is a programme update
-            profileSetup.setAttribute('data-programme-update', 'true');
-        }
+        // Redirect to the dedicated goals setup page
+        window.location.href = '/goals-setup';
     }
 }
 
@@ -1110,7 +1105,34 @@ function displayStravaMetrics(metrics) {
 }
 
 function connectStrava() {
-    window.location.href = '/connect-strava';
+    // Open Strava connection in a popup to preserve session
+    const stravaWindow = window.open('/connect-strava', 'strava_auth', 'width=800,height=600,scrollbars=yes,resizable=yes');
+    
+    // Listen for messages from popup
+    const messageHandler = (event) => {
+        if (event.data === 'strava_connected') {
+            window.removeEventListener('message', messageHandler);
+            checkStravaConnection();
+            showSuccess('Strava connected successfully!');
+        } else if (event.data === 'strava_error') {
+            window.removeEventListener('message', messageHandler);
+            showError('Failed to connect Strava. Please try again.');
+        }
+    };
+    
+    window.addEventListener('message', messageHandler);
+    
+    // Fallback - check if window closed
+    const checkClosed = setInterval(() => {
+        if (stravaWindow.closed) {
+            clearInterval(checkClosed);
+            window.removeEventListener('message', messageHandler);
+            // Refresh Strava status regardless
+            setTimeout(() => {
+                checkStravaConnection();
+            }, 1000);
+        }
+    }, 1000);
 }
 
 async function disconnectStrava() {

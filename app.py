@@ -231,7 +231,19 @@ def connect_strava():
     session['user_id_for_strava'] = current_user.id
     redirect_uri = url_for('strava_callback', _external=True)
     auth_url = strava_api.get_authorization_url(redirect_uri)
-    return redirect(auth_url)
+    
+    # Return a page that closes the popup window after auth
+    return f"""
+    <html>
+    <head><title>Connecting to Strava...</title></head>
+    <body>
+        <script>
+            window.location.href = '{auth_url}';
+        </script>
+        <p>Redirecting to Strava...</p>
+    </body>
+    </html>
+    """
 
 @app.route("/strava/callback")
 def strava_callback():
@@ -252,9 +264,40 @@ def strava_callback():
     if current_user.is_authenticated:
         token_data = strava_api.exchange_code_for_token(code)
         if token_data:
-            return redirect(url_for('index') + '?strava=connected')
+            # Return a page that closes the popup and notifies parent
+            return """
+            <html>
+            <head><title>Strava Connected</title></head>
+            <body>
+                <script>
+                    if (window.opener) {
+                        window.opener.postMessage('strava_connected', '*');
+                        window.close();
+                    } else {
+                        window.location.href = '/';
+                    }
+                </script>
+                <p>Strava connected successfully! This window will close automatically.</p>
+            </body>
+            </html>
+            """
         else:
-            return redirect(url_for('index') + '?error=strava_token_failed')
+            return """
+            <html>
+            <head><title>Strava Connection Failed</title></head>
+            <body>
+                <script>
+                    if (window.opener) {
+                        window.opener.postMessage('strava_error', '*');
+                        window.close();
+                    } else {
+                        window.location.href = '/?error=strava_token_failed';
+                    }
+                </script>
+                <p>Strava connection failed. This window will close automatically.</p>
+            </body>
+            </html>
+            """
     else:
         return redirect(url_for('index') + '?error=auth_required')
     
